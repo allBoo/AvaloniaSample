@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DumpTruck.Views.DriveArea">
+
+    <Panel>
+        <Panel Margin="0 0 0 80" PropertyChanged="DrawArea_OnPropertyChanged" Name="DriveAreaBounds">
+        </Panel>
+        <Panel Height="70" Margin="0 30 20 5"   
+               HorizontalAlignment="Right" VerticalAlignment="Bottom" Name="ControlsPanel">
+                    
+            <Button HorizontalAlignment="Center" VerticalAlignment="Top"
+                    Command="{Binding MoveCommand}" HotKey="Up" CommandParameter="Up">
+                <PathIcon Data="{StaticResource arrow_up_regular}" />
+            </Button>
+            <Panel HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="120">
+                <Button  Command="{Binding MoveCommand}" Click="MoveButtonClick"
+                         HotKey="Left" CommandParameter="Left">
+                    <PathIcon Data="{StaticResource arrow_left_regular}" />
+                </Button>
+                <Button  Command="{Binding MoveCommand}" Click="MoveButtonClick"
+                         HorizontalAlignment="Center" HotKey="Down" CommandParameter="Down">
+                    <PathIcon Data="{StaticResource arrow_down_regular}" />
+                </Button>
+                <Button  Command="{Binding MoveCommand}" Click="MoveButtonClick"
+                         HorizontalAlignment="Right" HotKey="Right" CommandParameter="Right">
+                    <PathIcon Data="{StaticResource arrow_right_regular}" />
+                </Button>
+            </Panel>
+        </Panel>
+    </Panel>
+
+</UserControl>
