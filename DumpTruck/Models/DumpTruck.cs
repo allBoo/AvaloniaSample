@@ -13,7 +13,7 @@ using AvaloniaColor = Avalonia.Media.Color;
 
 namespace DumpTruck.Models;
 
-public class DumpTruck : IDrawable
+public class DumpTruck
 {
     /// <summary>
     /// Скорость
