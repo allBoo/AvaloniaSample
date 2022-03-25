@@ -58,7 +58,7 @@ public class DumpTruck : IDrawable
     /// <summary>
     /// Высота отрисовки автомобиля
     /// </summary>
-    protected readonly int _carHeight = 50;
+    protected readonly int _carHeight = 60;
     
     /// <summary>
     /// Инициализация свойств
@@ -177,48 +177,42 @@ public class DumpTruck : IDrawable
             return;
         }
 
-        // System.Drawing.Graphics g = new System.Drawing.Graphics();
-        // g.DrawRectangle();
-        
-        // var brush = new ImmutableSolidColorBrush(Color.Black);
-        
         Pen pen = new(Brushes.Black);
 
-        // границы автомобиля
-        var brRed = new ImmutableSolidColorBrush(Brushes.Red);
-        var brYellow = new ImmutableSolidColorBrush(Brushes.Yellow);
-
-        const double headlightRadius = 10;
-        
-        g.DrawEllipse(brRed, pen, new Point(_startPosX.Value + headlightRadius, _startPosY.Value + headlightRadius), 
-            headlightRadius, headlightRadius);
-        g.DrawEllipse(brRed, pen, new Point(_startPosX.Value + headlightRadius, _startPosY.Value + 30 + headlightRadius), 
-            headlightRadius, headlightRadius);
-        g.DrawEllipse(brYellow, pen, new Point(_startPosX.Value + 70 + headlightRadius, _startPosY.Value + headlightRadius),
-            headlightRadius, headlightRadius);
-        g.DrawEllipse(brYellow, pen, new Point(_startPosX.Value + 70 + headlightRadius, _startPosY.Value + 30 + headlightRadius),
-            headlightRadius, headlightRadius);
-
-        // кузов
-        g.DrawRectangle(null, pen, new Rect(_startPosX.Value - 1, _startPosY.Value + 10, 10, 30));
-        g.DrawRectangle(null, pen, new Rect(_startPosX.Value + 80, _startPosY.Value + 10, 10, 30));
-        g.DrawRectangle(null, pen, new Rect(_startPosX.Value + 10, _startPosY.Value - 1, 70, 52));
-        
         var bodyBrush = new ImmutableSolidColorBrush(AvaloniaColor.FromRgb(BodyColor.R, BodyColor.G, BodyColor.B));
-        g.FillRectangle(bodyBrush, new Rect(_startPosX.Value, _startPosY.Value + 10, 10, 30));
-        g.FillRectangle(bodyBrush, new Rect(_startPosX.Value + 80, _startPosY.Value + 10, 10, 30));
-        g.FillRectangle(bodyBrush, new Rect(_startPosX.Value + 10, _startPosY.Value, 70, 50));
-        
-        // стекла
-        var brBlue = new ImmutableSolidColorBrush(Brushes.LightBlue);
-        g.FillRectangle(brBlue, new Rect(_startPosX.Value + 60, _startPosY.Value + 5, 5, 40));
-        g.FillRectangle(brBlue, new Rect(_startPosX.Value + 20, _startPosY.Value + 5, 5, 40));
-        g.FillRectangle(brBlue, new Rect(_startPosX.Value + 25, _startPosY.Value + 3, 35, 2));
-        g.FillRectangle(brBlue, new Rect(_startPosX.Value + 25, _startPosY.Value + 46, 35, 2));
+        var brBlack = new ImmutableSolidColorBrush(Brushes.Black);
+        var brDGray = new ImmutableSolidColorBrush(Brushes.DarkGray);
 
-        // выделяем рамкой крышу
-        g.DrawRectangle(null, pen, new Rect(_startPosX.Value + 25, _startPosY.Value + 5, 35, 40));
-        g.DrawRectangle(null, pen, new Rect(_startPosX.Value + 65, _startPosY.Value + 10, 25, 30));
-        g.DrawRectangle(null, pen, new Rect(_startPosX.Value, _startPosY.Value + 10, 15, 30));
+        const double tireRadius = 10;
+        const double wheelRadius = 7;
+
+        // wheels
+        var cy = _startPosY.Value + _carHeight - tireRadius;
+        var wheelCenter = new Point(_startPosX.Value + tireRadius + 2, cy);
+        g.DrawEllipse(brBlack, pen, wheelCenter, tireRadius, tireRadius);
+        g.DrawEllipse(brDGray, pen, wheelCenter, wheelRadius, wheelRadius);
+
+        wheelCenter = new Point(_startPosX.Value + tireRadius * 3 + 5, cy);
+        g.DrawEllipse(brBlack, pen, wheelCenter, tireRadius, tireRadius);
+        g.DrawEllipse(brDGray, pen, wheelCenter, wheelRadius, wheelRadius);
+
+        wheelCenter = new Point(_startPosX.Value + _carWidth - tireRadius - 2, cy);
+        g.DrawEllipse(brBlack, pen, wheelCenter, tireRadius, tireRadius);
+        g.DrawEllipse(brDGray, pen, wheelCenter, wheelRadius, wheelRadius);
+
+        // body
+        const double bodyHeight = 10;
+        g.DrawRectangle(bodyBrush, pen, new Rect(_startPosX.Value, _startPosY.Value + _carHeight - tireRadius*2 - bodyHeight - 1, 
+            _carWidth, bodyHeight));
+        
+        // cabin
+        const double cabinWidth = 25;
+        double cabinHeight = _carHeight - tireRadius * 2 - bodyHeight - 2;
+        g.DrawRectangle(bodyBrush, pen, new Rect(_startPosX.Value + _carWidth - cabinWidth - 2, _startPosY.Value, cabinWidth, cabinHeight));
+        
+        // glasses
+        var brBlue = new ImmutableSolidColorBrush(Brushes.LightBlue);
+        g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - 5, _startPosY.Value + 2, 3, cabinHeight - 10));
+        g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - cabinWidth + 5, _startPosY.Value + 5, 13, cabinHeight - 15));
     }
 }

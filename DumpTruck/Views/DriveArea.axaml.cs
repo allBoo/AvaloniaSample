@@ -49,13 +49,6 @@ public partial class DriveArea : UserControl
         }
     }
     
-    private void MoveButtonClick(object? sender, RoutedEventArgs e)
-    {
-        //
-        Trace.WriteLine("MoveButtonClick Sender " + ((Button)sender).ToString());
-        Trace.WriteLine("MoveButtonClick " + e.Route);
-    }
-
     // Interface
 
     public void Draw()
@@ -94,7 +87,6 @@ public partial class DriveArea : UserControl
     // will be called automatically after InvalidateVisual
     public override void Render(DrawingContext context)
     {
-        Trace.WriteLine("Render");
         _vehicle.Draw(context);
     }
 }

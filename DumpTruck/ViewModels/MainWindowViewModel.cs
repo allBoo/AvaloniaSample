@@ -29,7 +29,7 @@ namespace DumpTruck.ViewModels
             {
                 if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
                 {
-                    Trace.TraceWarning("Exit");
+                    Trace.WriteLine("Exit");
                     lifetime.Shutdown();
                 }
             });
