@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -8,30 +7,22 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using DumpTruck.ViewModels;
 using DumpTruck.Models;
-using Color = System.Drawing.Color;
 
 namespace DumpTruck.Views;
 
 public partial class DriveArea : UserControl
 {
-    private readonly Models.DumpTruck _vehicle;
+    private IDrawObject _vehicle;
 
     public int VehicleSpeed => _vehicle.Speed;
     public float VehicleWeight => _vehicle.Weight;
-    public string VehicleBodyColor => _vehicle.BodyColor.Name;
-
-    public DriveArea(Models.DumpTruck vehicle)
-    {
-        InitializeComponent();
-
-        _vehicle = vehicle;
-
-        DataContext = new DriveAreaViewModel(this);
-    }
+    public string VehicleBodyColor => _vehicle.BodyColor.ToString();
 
     public DriveArea()
     {
-        // used by Designer
+        InitializeComponent();
+
+        DataContext = new DriveAreaViewModel(this);
     }
 
     private void InitializeComponent()
@@ -58,14 +49,17 @@ public partial class DriveArea : UserControl
 
     public void InitializeVehicle()
     {
+        var driveAreaBounds = this.FindControl<Panel>("DriveAreaBounds");
+        
         Random rnd = new();
 
-        _vehicle.Init(rnd.Next(100, 300), rnd.Next(1000, 2000),
-            Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)));
-        _vehicle.SetPosition(rnd.Next(10, 100), rnd.Next(10, 100));
+        _vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000),
+            Color.FromArgb(0xff, (byte)rnd.Next(0, 256), (byte)rnd.Next(0, 256), (byte)rnd.Next(0, 256)));
+        _vehicle.SetObject(rnd.Next(10, 100), rnd.Next(10, 100), 
+            (int)driveAreaBounds.Bounds.Width, (int)driveAreaBounds.Bounds.Height);
 
         Trace.WriteLine("Create New Model Handler / Speed " + _vehicle.Speed + " / Weight " +
-                        _vehicle.Weight + " / Color " + _vehicle.BodyColor.Name);
+                        _vehicle.Weight + " / Color " + _vehicle.BodyColor.ToString());
         Draw();
     }
     
@@ -74,19 +68,19 @@ public partial class DriveArea : UserControl
         Trace.WriteLine("MoveCommand " + directionStr);
         
         Enum.TryParse(directionStr, out Direction direction);
-        _vehicle.MoveTransport(direction);
+        _vehicle.MoveObject(direction);
         Draw();
     }
 
     public void Resize(Rect newSize)
     {
         Trace.WriteLine("Size changed " + newSize);
-        _vehicle.ChangeBorders((int)newSize.Right, (int)newSize.Bottom);
+        _vehicle?.ChangeBorders((int)newSize.Right, (int)newSize.Bottom);
     }
 
     // will be called automatically after InvalidateVisual
     public override void Render(DrawingContext context)
     {
-        _vehicle.Draw(context);
+        _vehicle?.DrawObject(context);
     }
 }

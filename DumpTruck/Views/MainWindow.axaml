@@ -9,7 +9,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="DumpTruck"
         
-        MinHeight="200" MinWidth="300"
+        MinHeight="220" MinWidth="300"
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
         ExtendClientAreaToDecorationsHint="True"

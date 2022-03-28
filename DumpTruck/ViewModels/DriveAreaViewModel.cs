@@ -28,8 +28,6 @@ public class DriveAreaViewModel : ViewModelBase
 
     void MoveModel(string directionStr)
     {
-        Trace.WriteLine("MoveCommand " + directionStr);
-        
         _parent.Move(directionStr);
     }
 }

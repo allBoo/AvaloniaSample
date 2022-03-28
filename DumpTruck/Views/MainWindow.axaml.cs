@@ -11,11 +11,8 @@ namespace DumpTruck.Views
         {
             InitializeComponent();
             
-            // Create new data model
-            Models.DumpTruck dataModel = new Models.DumpTruck();
-            
             // create interaction area for the model
-            DriveArea area = new DriveArea(dataModel);
+            DriveArea area = new DriveArea();
             
             // search DriveArea container and insert DriveArea control into it
             var driveAreaPanel = this.FindControl<Panel>("DriveArea");

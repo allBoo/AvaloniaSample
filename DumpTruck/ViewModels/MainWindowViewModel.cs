@@ -13,7 +13,7 @@ namespace DumpTruck.ViewModels
 
         public int Speed => _area.VehicleSpeed;
         public float Weight => _area.VehicleWeight;
-        public string BodyColor => "#" + _area.VehicleBodyColor;
+        public string BodyColor => _area.VehicleBodyColor;
         
         
         public ICommand CreateCommand { get; }

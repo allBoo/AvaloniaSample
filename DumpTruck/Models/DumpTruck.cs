@@ -1,19 +1,15 @@
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
-using Avalonia.Visuals;
-using Avalonia.VisualTree;
-using Color = System.Drawing.Color;
 using System.Diagnostics;
 using Avalonia;
 using Brushes = Avalonia.Media.Brushes;
 using Pen = Avalonia.Media.Pen;
 using Point = Avalonia.Point;
-using AvaloniaColor = Avalonia.Media.Color;
 
 
 namespace DumpTruck.Models;
 
-public class DumpTruck
+public class DumpTruck : IDrawObject
 {
     /// <summary>
     /// Скорость
@@ -24,6 +20,11 @@ public class DumpTruck
     /// Вес автомобиля
     /// </summary>
     public float Weight { private set; get; }
+    
+    /// <summary>
+    /// Шаг объекта
+    /// </summary>
+    public float Step => Speed * 100 / Weight;
     
     /// <summary>
     /// Цвет кузова
@@ -61,12 +62,17 @@ public class DumpTruck
     protected readonly int _carHeight = 60;
     
     /// <summary>
-    /// Инициализация свойств
+    /// Признак, что объект переместился
+    /// </summary>
+    private bool _makeStep;
+    
+    /// <summary>
+    /// Инициализация объекта
     /// </summary>
     /// <param name="speed">Скорость</param>
     /// <param name="weight">Вес автомобиля</param>
     /// <param name="bodyColor">Цвет кузова</param>
-    public void Init(int speed, float weight, Color bodyColor)
+    public DumpTruck(int speed, float weight, Color bodyColor)
     {
         Speed = speed;
         Weight = weight;
@@ -74,20 +80,37 @@ public class DumpTruck
     }
     
     /// <summary>
+    /// Инициализация объекта
+    /// </summary>
+    /// <param name="speed">Скорость</param>
+    /// <param name="weight">Вес автомобиля</param>
+    /// <param name="bodyColor">Цвет кузова</param>
+    /// <param name="carWidth">Ширина объекта</param>
+    /// <param name="carHeight">Высота объекта</param>
+    public DumpTruck(int speed, float weight, Color bodyColor,  int carWidth, int carHeight)
+    {
+        Speed = speed;
+        Weight = weight;
+        BodyColor = bodyColor;
+        _carWidth = carWidth;
+        _carHeight = carHeight;
+    }
+    
+    /// <summary>
     /// Установка позиции автомобиля
     /// </summary>
     /// <param name="x">Координата X</param>
     /// <param name="y">Координата Y</param>
-    /// <param name="width">Ширина картинки</param>
-    /// <param name="height">Высота картинки</param>
-    public void SetPosition(int x, int y, int? width = null, int? height = null)
+    /// <param name="areaWidth">Ширина картинки</param>
+    /// <param name="areaHeight">Высота картинки</param>
+    public void SetObject(int x, int y, int? areaWidth = null, int? areaHeight = null)
     {
         _startPosX = x;
         _startPosY = y;
-        if (width != null)
-            _pictureWidth = width;
-        if (height != null)
-            _pictureHeight = height;
+        if (areaWidth != null && areaHeight != null)
+        {
+            ChangeBorders((int)areaWidth, (int)areaHeight);
+        }
     }
     
     /// <summary>
@@ -114,51 +137,65 @@ public class DumpTruck
     /// <param name="direction">Направление</param>
     public void MoveTransport(Direction direction)
     {
+        _makeStep = false;
         if (!_pictureWidth.HasValue || !_pictureHeight.HasValue)
         {
             return;
         }
-        float step = Speed * 100 / Weight;
-        
         switch (direction)
         {
             // вправо
             case Direction.Right:
-                if (_startPosX + _carWidth + step < _pictureWidth)
+                if (_startPosX + _carWidth + Step < _pictureWidth)
                 {
-                    _startPosX += step;
+                    _startPosX += Step;
+                    _makeStep = true;
+                }
+                else if (_startPosX + _carWidth < _pictureWidth)
+                {
+                    _startPosX = _pictureWidth - _carWidth;
                 }
                 break;
             
             // влево
             case Direction.Left:
-                if (_startPosX - step > 0)
+                if (_startPosX - Step > 0)
                 {
-                    _startPosX -= step;
+                    _startPosX -= Step;
+                    _makeStep = true;
                 }
-                else
+                else if (_startPosX > 0)
                 {
                     _startPosX = 0;
+                    _makeStep = true;
                 }
                 break;
             
             // вверх
             case Direction.Up:
-                if (_startPosY - step > 1)
+                if (_startPosY - Step > 1)
                 {
-                    _startPosY -= step;
+                    _startPosY -= Step;
+                    _makeStep = true;
                 }
-                else
+                else if (_startPosY > 1)
                 {
                     _startPosY = 1;
+                    _makeStep = true;
                 }
                 break;
             
             //вниз
             case Direction.Down:
-                if (_startPosY + _carHeight + step < _pictureHeight)
+                if (_startPosY + _carHeight + Step < _pictureHeight)
                 {
-                    _startPosY += step;
+                    _startPosY += Step;
+                    _makeStep = true;
+                }
+                else if (_startPosY + _carHeight < _pictureHeight)
+                {
+                    _startPosY = _pictureHeight - _carHeight;
+                    _makeStep = true;
                 }
                 break;
         }
@@ -168,7 +205,7 @@ public class DumpTruck
     /// Отрисовка автомобиля
     /// </summary>
     /// <param name="g"></param>
-    public void Draw(DrawingContext g)
+    public void DrawTransport(DrawingContext g)
     {
         Trace.WriteLine("Draw " + _startPosX + " / " + _startPosY);
         
@@ -179,7 +216,7 @@ public class DumpTruck
 
         Pen pen = new(Brushes.Black);
 
-        var bodyBrush = new ImmutableSolidColorBrush(AvaloniaColor.FromRgb(BodyColor.R, BodyColor.G, BodyColor.B));
+        var bodyBrush = new ImmutableSolidColorBrush(BodyColor);
         var brBlack = new ImmutableSolidColorBrush(Brushes.Black);
         var brDGray = new ImmutableSolidColorBrush(Brushes.DarkGray);
 
@@ -214,5 +251,22 @@ public class DumpTruck
         var brBlue = new ImmutableSolidColorBrush(Brushes.LightBlue);
         g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - 5, _startPosY.Value + 2, 3, cabinHeight - 10));
         g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - cabinWidth + 5, _startPosY.Value + 5, 13, cabinHeight - 15));
+    }
+
+    public bool MoveObject(Direction direction)
+    {
+        MoveTransport(direction);
+        return _makeStep;
+    }
+    
+    public void DrawObject(DrawingContext g)
+    {
+        DrawTransport(g);
+    }
+    
+    public (float Left, float Right, float Top, float Bottom) GetCurrentPosition()
+    {
+        return (_startPosX.Value, _startPosX.Value + _carWidth,
+            _startPosY.Value, _startPosY.Value + _carHeight);
     }
 }
