@@ -16,14 +16,16 @@ namespace DumpTruck.ViewModels
         public string BodyColor => _area.VehicleBodyColor;
         
         
-        public ICommand CreateCommand { get; }
+        public ICommand CreateSimpleCommand { get; }
+        public ICommand CreateExtendedCommand { get; }
         public ICommand ExitCommand { get; }
         
         public MainWindowViewModel(DriveArea area)
         {
             _area = area;
 
-            CreateCommand = ReactiveCommand.Create(CreateNewModel);
+            CreateSimpleCommand = ReactiveCommand.Create(CreateNewSimpleModel);
+            CreateExtendedCommand = ReactiveCommand.Create(CreateNewExtendedModel);
             
             ExitCommand = ReactiveCommand.Create(() =>
             {
@@ -40,10 +42,22 @@ namespace DumpTruck.ViewModels
             // used by Designer
         }
 
-        void CreateNewModel()
+        void CreateNewSimpleModel()
         {
             _area.InitializeVehicle();
 
+            _updateStatusBar();
+        }
+        
+        void CreateNewExtendedModel()
+        {
+            _area.InitializeVehicle(true);
+
+            _updateStatusBar();
+        }
+        
+        private void _updateStatusBar()
+        {
             this.RaisePropertyChanged(nameof(Speed));
             this.RaisePropertyChanged(nameof(Weight));
             this.RaisePropertyChanged(nameof(BodyColor));

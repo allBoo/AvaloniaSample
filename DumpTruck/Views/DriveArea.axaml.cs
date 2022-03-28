@@ -12,7 +12,7 @@ namespace DumpTruck.Views;
 
 public partial class DriveArea : UserControl
 {
-    private IDrawObject _vehicle;
+    private IDrawObject? _vehicle;
 
     public int VehicleSpeed => _vehicle.Speed;
     public float VehicleWeight => _vehicle.Weight;
@@ -47,19 +47,30 @@ public partial class DriveArea : UserControl
         InvalidateVisual();
     }
 
-    public void InitializeVehicle()
+    public void InitializeVehicle(bool extended = false)
     {
         var driveAreaBounds = this.FindControl<Panel>("DriveAreaBounds");
         
         Random rnd = new();
 
-        _vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000),
-            Color.FromArgb(0xff, (byte)rnd.Next(0, 256), (byte)rnd.Next(0, 256), (byte)rnd.Next(0, 256)));
+        Color RandomColor() =>
+            Color.FromArgb(0xff, (byte) rnd.Next(0, 256), (byte) rnd.Next(0, 256), (byte) rnd.Next(0, 256));
+
+        if (extended)
+        {
+            _vehicle = new Models.TipTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor(), 
+                true, RandomColor(), true, RandomColor());
+        }
+        else
+        {
+            _vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor());
+        }
+        
         _vehicle.SetObject(rnd.Next(10, 100), rnd.Next(10, 100), 
             (int)driveAreaBounds.Bounds.Width, (int)driveAreaBounds.Bounds.Height);
 
-        Trace.WriteLine("Create New Model Handler / Speed " + _vehicle.Speed + " / Weight " +
-                        _vehicle.Weight + " / Color " + _vehicle.BodyColor.ToString());
+        Trace.WriteLine("Create '" + _vehicle.GetType().Name + "' Handler / Speed " + _vehicle.Speed + 
+                        " / Weight " + _vehicle.Weight + " / Color " + _vehicle.BodyColor.ToString());
         Draw();
     }
     
@@ -68,7 +79,7 @@ public partial class DriveArea : UserControl
         Trace.WriteLine("MoveCommand " + directionStr);
         
         Enum.TryParse(directionStr, out Direction direction);
-        _vehicle.MoveObject(direction);
+        _vehicle?.MoveObject(direction);
         Draw();
     }
 

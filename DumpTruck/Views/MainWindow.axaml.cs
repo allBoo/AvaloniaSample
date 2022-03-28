@@ -5,8 +5,6 @@ namespace DumpTruck.Views
 {
     public partial class MainWindow : Window
     {
-        private readonly MainWindowViewModel _vm;
-        
         public MainWindow()
         {
             InitializeComponent();

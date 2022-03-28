@@ -34,12 +34,12 @@ public class DumpTruck : IDrawObject
     /// <summary>
     /// Левая координата отрисовки автомобиля
     /// </summary>
-    private float? _startPosX = null;
+    protected float? _startPosX = null;
     
     /// <summary>
     /// Верхняя кооридната отрисовки автомобиля
     /// </summary>
-    private float? _startPosY = null;
+    protected float? _startPosY = null;
     
     /// <summary>
     /// Ширина окна отрисовки
@@ -205,7 +205,7 @@ public class DumpTruck : IDrawObject
     /// Отрисовка автомобиля
     /// </summary>
     /// <param name="g"></param>
-    public void DrawTransport(DrawingContext g)
+    public virtual void DrawTransport(DrawingContext g)
     {
         Trace.WriteLine("Draw " + _startPosX + " / " + _startPosY);
         
@@ -244,13 +244,14 @@ public class DumpTruck : IDrawObject
         
         // cabin
         const double cabinWidth = 25;
-        double cabinHeight = _carHeight - tireRadius * 2 - bodyHeight - 2;
-        g.DrawRectangle(bodyBrush, pen, new Rect(_startPosX.Value + _carWidth - cabinWidth - 2, _startPosY.Value, cabinWidth, cabinHeight));
+        const double cabinHeight = 28;
+        double cabinTop = _startPosY.Value + _carHeight - tireRadius * 2 - bodyHeight - cabinHeight - 2;
+        g.DrawRectangle(bodyBrush, pen, new Rect(_startPosX.Value + _carWidth - cabinWidth - 2, cabinTop, cabinWidth, cabinHeight));
         
         // glasses
         var brBlue = new ImmutableSolidColorBrush(Brushes.LightBlue);
-        g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - 5, _startPosY.Value + 2, 3, cabinHeight - 10));
-        g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - cabinWidth + 5, _startPosY.Value + 5, 13, cabinHeight - 15));
+        g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - 5, cabinTop + 2, 3, cabinHeight - 10));
+        g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - cabinWidth + 5, cabinTop + 5, 13, cabinHeight - 15));
     }
 
     public bool MoveObject(Direction direction)

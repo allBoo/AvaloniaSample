@@ -42,12 +42,15 @@
         
         <Panel Margin="0 30 0 30" Name="ContentPanel">
             <Panel Name="DriveArea" Margin="0 3 0 0" ></Panel>
-            <Panel Margin="20 0 0 5"  
-                   HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                <Button Command="{Binding CreateCommand}" HotKey="Ctrl+N">
+            <WrapPanel Margin="20 0 0 5"  
+                       HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <Button Command="{Binding CreateSimpleCommand}" HotKey="Ctrl+N">
                     Создать
                 </Button>
-            </Panel>
+                <Button Command="{Binding CreateExtendedCommand}" HotKey="Ctrl+M" Margin="20 0 0 0">
+                    Модификация
+                </Button>
+            </WrapPanel>
         </Panel>
         
         <WrapPanel Height="25" VerticalAlignment="Bottom" Name="StatusBar" Background="gray">
