@@ -31,7 +31,7 @@ public interface IDrawObject
     /// <param name="y">Координата Y</param>
     /// <param name="width">Ширина полотна</param>
     /// <param name="height">Высота полотна</param>
-    void SetObject(int x, int y, int? width = null, int? height = null);
+    void SetObject(float x, float y, int? width = null, int? height = null);
     
     /// <summary>
     /// Изменение направления пермещения объекта

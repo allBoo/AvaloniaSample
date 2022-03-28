@@ -9,7 +9,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="DumpTruck"
         
-        MinHeight="220" MinWidth="300"
+        MinHeight="300" MinWidth="300"
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
         ExtendClientAreaToDecorationsHint="True"
@@ -29,31 +29,45 @@
                     MaterialOpacity="0.65" />
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
-
-        <Panel VerticalAlignment="Top" Name="MenuPanel" >
-            <Menu Margin="10 0 0 0">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Exit" Command="{Binding ExitCommand}" 
-                              HotKey="Ctrl+Q"/>
-                </MenuItem>
-            </Menu>
-            <Separator BorderThickness="0,0,0,1" BorderBrush="gray"></Separator>
-        </Panel>
         
-        <Panel Margin="0 30 0 30" Name="ContentPanel">
-            <Panel Name="DriveArea" Margin="0 3 0 0" ></Panel>
-            <WrapPanel Margin="20 0 0 5"  
-                       HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                <Button Command="{Binding CreateSimpleCommand}" HotKey="Ctrl+N">
-                    Создать
+        <DockPanel Margin="0 0 0 0" Name="ContentPanel" >
+            <Panel VerticalAlignment="Top" Name="MenuPanel" DockPanel.Dock="Top">
+                <Menu Margin="10 0 0 0">
+                    <MenuItem Header="_File">
+                        <MenuItem Header="_Exit" Command="{Binding ExitCommand}" 
+                                  HotKey="Ctrl+Q"/>
+                    </MenuItem>
+                </Menu>
+                <Separator BorderThickness="0,0,0,1" BorderBrush="gray"></Separator>
+            </Panel>
+            
+            <WrapPanel Margin="20 10 0 0" VerticalAlignment="Top" DockPanel.Dock="Top">
+                <Button Command="{Binding RunTestCommand}">
+                    Провести тест
                 </Button>
-                <Button Command="{Binding CreateExtendedCommand}" HotKey="Ctrl+M" Margin="20 0 0 0">
-                    Модификация
-                </Button>
+                <ComboBox Margin="5 0 0 0" Name="TestIndex" 
+                          SelectedIndex="{Binding TestIndex}">
+                    <ComboBoxItem>Тест по границам</ComboBoxItem>
+                </ComboBox>
             </WrapPanel>
-        </Panel>
+            
+            <Panel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" 
+                   Margin="0 0 0 25">
+                <Panel Name="DriveArea" Margin="0 3 0 0" ></Panel>
+            
+                <WrapPanel Margin="20 0 0 5" 
+                           HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <Button Command="{Binding CreateSimpleCommand}" HotKey="Ctrl+N">
+                        Создать
+                    </Button>
+                    <Button Command="{Binding CreateExtendedCommand}" HotKey="Ctrl+M" Margin="20 0 0 0">
+                        Модификация
+                    </Button>
+                </WrapPanel>
+            </Panel>
+        </DockPanel>
         
-        <WrapPanel Height="25" VerticalAlignment="Bottom" Name="StatusBar" Background="gray">
+        <WrapPanel Height="25" VerticalAlignment="Bottom" Name="StatusBar" Background="gray" DockPanel.Dock="Left">
             <TextBlock Padding="1 3 5 0">Скорость: </TextBlock>
             <TextBlock Padding="1 3 5 0" Text="{Binding Speed}"></TextBlock>
             <TextBlock Padding="10 3 5 0">Вес: </TextBlock>

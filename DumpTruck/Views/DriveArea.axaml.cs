@@ -7,6 +7,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using DumpTruck.ViewModels;
 using DumpTruck.Models;
+using DumpTruck.Tests;
 
 namespace DumpTruck.Views;
 
@@ -42,6 +43,12 @@ public partial class DriveArea : UserControl
     
     // Interface
 
+    private Rect AreaBounds()
+    {
+        var driveAreaBounds = this.FindControl<Panel>("DriveAreaBounds");
+        return driveAreaBounds.Bounds;
+    }
+
     public void Draw()
     {
         InvalidateVisual();
@@ -49,8 +56,6 @@ public partial class DriveArea : UserControl
 
     public void InitializeVehicle(bool extended = false)
     {
-        var driveAreaBounds = this.FindControl<Panel>("DriveAreaBounds");
-        
         Random rnd = new();
 
         Color RandomColor() =>
@@ -65,9 +70,9 @@ public partial class DriveArea : UserControl
         {
             _vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor());
         }
-        
-        _vehicle.SetObject(rnd.Next(10, 100), rnd.Next(10, 100), 
-            (int)driveAreaBounds.Bounds.Width, (int)driveAreaBounds.Bounds.Height);
+
+        Rect bounds = AreaBounds();
+        _vehicle.SetObject(rnd.Next(10, 100), rnd.Next(10, 100), (int)bounds.Width, (int)bounds.Height);
 
         Trace.WriteLine("Create '" + _vehicle.GetType().Name + "' Handler / Speed " + _vehicle.Speed + 
                         " / Weight " + _vehicle.Weight + " / Color " + _vehicle.BodyColor.ToString());
@@ -93,5 +98,26 @@ public partial class DriveArea : UserControl
     public override void Render(DrawingContext context)
     {
         _vehicle?.DrawObject(context);
+    }
+    
+    /// <summary>
+    /// Проведение теста
+    /// </summary>
+    /// <param name="testObject"></param>
+    public void RunTest(AbstractTestObject testObject)
+    {
+        if (_vehicle == null)
+        {
+            return;
+        }
+        
+        var bounds = AreaBounds();
+        var position = _vehicle.GetCurrentPosition();
+        testObject.Init(_vehicle);
+
+        testObject.SetPosition((int)bounds.Width, (int)bounds.Height);
+        Helpers.MessageBox.Show(testObject.TestObject());
+        
+        _vehicle.SetObject(position.Left, position.Top, (int)bounds.Width, (int)bounds.Height);
     }
 }

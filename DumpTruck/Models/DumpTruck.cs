@@ -103,7 +103,7 @@ public class DumpTruck : IDrawObject
     /// <param name="y">Координата Y</param>
     /// <param name="areaWidth">Ширина картинки</param>
     /// <param name="areaHeight">Высота картинки</param>
-    public void SetObject(int x, int y, int? areaWidth = null, int? areaHeight = null)
+    public void SetObject(float x, float y, int? areaWidth = null, int? areaHeight = null)
     {
         _startPosX = x;
         _startPosY = y;
