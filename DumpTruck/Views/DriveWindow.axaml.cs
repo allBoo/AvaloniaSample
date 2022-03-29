@@ -16,7 +16,7 @@ public partial class DriveWindow : Window
         
         // create interaction area for the model
         DriveArea area = new DriveArea();
-            
+        
         // search DriveArea container and insert DriveArea control into it
         var driveAreaPanel = this.FindControl<Panel>("DriveArea");
         driveAreaPanel.Children.Add(area);

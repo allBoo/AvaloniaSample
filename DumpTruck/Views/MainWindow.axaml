@@ -4,12 +4,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:uc="using:DumpTruck.Controls"
         xmlns:vm="using:DumpTruck.ViewModels"
+        xmlns:v="using:DumpTruck.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="DumpTruck.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="DumpTruck Parking"
         
-        MinHeight="300" MinWidth="300"
+        MinHeight="300" MinWidth="400"
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
         ExtendClientAreaToDecorationsHint="True"
@@ -42,8 +43,9 @@
             </Panel>
             
             <Panel>
-                <Panel Name="ParkingArea" Margin="0 0 180 0"
+                <Panel Margin="0 0 180 0" 
                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <v:ParkingArea Margin="5" Name="ParkingArea"></v:ParkingArea>
                 </Panel>
                 <Separator BorderThickness="1,0,0,0" BorderBrush="gray"
                            VerticalAlignment="Stretch" HorizontalAlignment="Right"
@@ -67,11 +69,12 @@
                             <StackPanel Margin="5" Spacing="10">
                                 <WrapPanel Margin="0 10 0 0" HorizontalAlignment="Center">
                                     <TextBlock TextWrapping="Wrap" VerticalAlignment="Center">Место:</TextBlock>
-                                    <uc:NumericTextBox Margin="5 0 0 0" Width="30" ></uc:NumericTextBox>
+                                    <uc:NumericTextBox Margin="5 0 0 0" Width="30" 
+                                                       Text="{Binding ParkingPlace}"></uc:NumericTextBox>
                                 </WrapPanel>
                                 
                                 <Button HorizontalAlignment="Center"
-                                        Command="{Binding CreateSimpleCommand}" HotKey="Ctrl+N">
+                                        Command="{Binding TakeObjectCommand}">
                                     <TextBlock TextWrapping="Wrap">Забрать</TextBlock>
                                 </Button>
                             </StackPanel>

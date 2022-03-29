@@ -1,47 +1,60 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using DumpTruck.Tests;
-using ReactiveUI;
 using DumpTruck.Views;
+using ReactiveUI;
 
 namespace DumpTruck.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private ParkingArea ParkingArea { get; }
+        
+        private string? _parkingPlace;
+
+        public string? ParkingPlace
+        {
+            get => _parkingPlace;
+            set => this.RaiseAndSetIfChanged(ref _parkingPlace, value);
+        }
+        
+        public ICommand ExitCommand { get; }
         public ICommand CreateSimpleCommand { get; }
         public ICommand CreateExtendedCommand { get; }
-        public ICommand ExitCommand { get; }
+        public ICommand TakeObjectCommand { get; }
         
-        public MainWindowViewModel()
+        public MainWindowViewModel(ParkingArea parkingArea)
         {
+            ParkingArea = parkingArea;
+            
+            ExitCommand = ReactiveCommand.Create(Helpers.App.Exit);
             CreateSimpleCommand = ReactiveCommand.Create(CreateNewSimpleModel);
             CreateExtendedCommand = ReactiveCommand.Create(CreateNewExtendedModel);
-            
-            ExitCommand = ReactiveCommand.Create(() =>
-            {
-                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
-                {
-                    Trace.WriteLine("Exit");
-                    lifetime.Shutdown();
-                }
-            });
+            TakeObjectCommand = ReactiveCommand.Create(TakeFromParking);
         }
 
-        // public MainWindowViewModel()
-        // {
-        //     // used by Designer
-        // }
+        public MainWindowViewModel()
+        {
+            // used by Designer
+        }
 
-        void CreateNewSimpleModel()
+        private void CreateNewSimpleModel()
         {
             // _area.InitializeVehicle();
         }
         
-        void CreateNewExtendedModel()
+        private void CreateNewExtendedModel()
         {
             // _area.InitializeVehicle(true);
+        }
+
+        private void TakeFromParking()
+        {
+            if (!string.IsNullOrEmpty(ParkingPlace))
+            {
+                var parkingPlaceIdx = Convert.ToInt32(ParkingPlace);
+                Trace.WriteLine("Take from place " + ParkingPlace);
+            }
         }
     }
 }

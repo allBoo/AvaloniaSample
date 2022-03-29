@@ -9,8 +9,11 @@ namespace DumpTruck.Views
         {
             InitializeComponent();
             
+            // search DriveArea container and insert DriveArea control into it
+            var parking = this.FindControl<ParkingArea>("ParkingArea");
+
             // create window view-model and pass DriveArea into it, so Window can interact with it
-            DataContext = new MainWindowViewModel();
+            DataContext = new MainWindowViewModel(parking);
         }
     }
 }

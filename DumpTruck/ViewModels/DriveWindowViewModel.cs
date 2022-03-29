@@ -15,20 +15,11 @@ namespace DumpTruck.ViewModels
         public int Speed => _area.VehicleSpeed;
         public float Weight => _area.VehicleWeight;
         public string BodyColor => _area.VehicleBodyColor;
-        public ICommand CloseCommand { get; }
         
         public DriveWindowViewModel(DriveArea area)
         {
             _area = area;
-
-            CloseCommand = ReactiveCommand.Create(() =>
-            {
-                if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
-                {
-                    Trace.WriteLine("Exit");
-                    lifetime.Shutdown();
-                }
-            });
+            _updateStatusBar();
         }
 
         public DriveWindowViewModel()
