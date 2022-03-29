@@ -207,8 +207,6 @@ public class DumpTruck : IDrawObject
     /// <param name="g"></param>
     public virtual void DrawTransport(DrawingContext g)
     {
-        Trace.WriteLine("Draw " + _startPosX + " / " + _startPosY);
-        
         if (!_startPosX.HasValue || !_startPosY.HasValue)
         {
             return;
@@ -269,5 +267,10 @@ public class DumpTruck : IDrawObject
     {
         return (_startPosX.Value, _startPosX.Value + _carWidth,
             _startPosY.Value, _startPosY.Value + _carHeight);
+    }
+
+    public (int Width, int Height) GetDimensions()
+    {
+        return (_carWidth, _carHeight);
     }
 }

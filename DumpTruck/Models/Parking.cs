@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Media;
+using System.Diagnostics;
 
 namespace DumpTruck.Models;
 
@@ -33,7 +34,11 @@ public class Parking<T> where T : class, IDrawObject
     /// <summary>
     /// Размер парковочного места (высота)
     /// </summary>
-    private readonly int _placeSizeHeight = 80;
+    private readonly int _placeSizeHeight = 90;
+
+    private int Width => _pictureWidth / _placeSizeWidth;
+    
+    private int Height => _pictureHeight / _placeSizeHeight;
     
     /// <summary>
     /// Конструктор
@@ -42,9 +47,7 @@ public class Parking<T> where T : class, IDrawObject
     /// <param name="picHeight">Рамзер парковки - высота</param>
     public Parking(int picWidth, int picHeight)
     {
-        int width = picWidth / _placeSizeWidth;
-        int height = picHeight / _placeSizeHeight;
-        _places = new T[width * height];
+        _places = new T[Width * Height];
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
     }
@@ -99,13 +102,13 @@ public class Parking<T> where T : class, IDrawObject
     {
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
-        int width = picWidth / _placeSizeWidth;
-        int height = picHeight / _placeSizeHeight;
-        int newParkingSize = width * height;
+        int newParkingSize = Width * Height;
         
         // expand or reduce parking
         if (newParkingSize != _places.Length)
         {
+            Trace.WriteLine("Parking new Dimensions: Width = " + Width + " / Height = " + Height);
+
             T?[] newParking = new T[newParkingSize];
             for (int i = 0; i < _places.Length && i < newParkingSize; i++)
             {
@@ -125,9 +128,15 @@ public class Parking<T> where T : class, IDrawObject
         DrawMarking(g);
         for (int i = 0; i < _places.Length; i++)
         {
-            _places[i]?.SetObject(5 + i / 5 * _placeSizeWidth + 5, i %
-                5 * _placeSizeHeight + 15, _pictureWidth, _pictureHeight);
-            _places[i]?.DrawObject(g);
+            if (_places[i] != null)
+            {
+                var dimensions = _places[i].GetDimensions();
+                int topOffset = (_placeSizeHeight - dimensions.Height) / 2;
+            
+                _places[i].SetObject(5 + (i / Height) * _placeSizeWidth + 5, 
+                    i % Height * _placeSizeHeight + topOffset, _pictureWidth, _pictureHeight);
+                _places[i].DrawObject(g);
+            }
         }
     }
     
@@ -142,7 +151,7 @@ public class Parking<T> where T : class, IDrawObject
         {
             for (int j = 0; j < _pictureHeight / _placeSizeHeight + 1; ++j)
             {
-                //линия рамзетки места
+                //линия разметки места
                 g.DrawLine(pen, new Point(i * _placeSizeWidth, j * _placeSizeHeight), new 
                     Point(i * _placeSizeWidth + _placeSizeWidth / 2, j * _placeSizeHeight));
             }

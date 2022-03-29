@@ -51,6 +51,12 @@ public interface IDrawObject
     /// </summary>
     /// <returns></returns>
     (float Left, float Right, float Top, float Bottom) GetCurrentPosition();
+    
+    /// <summary>
+    /// Получение размеров объекта
+    /// </summary>
+    /// <returns></returns>
+    (int Width, int Height) GetDimensions();
 
     /// <summary>
     /// Смена границ формы отрисовки

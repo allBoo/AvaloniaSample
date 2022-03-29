@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -56,7 +57,39 @@ public partial class ParkingArea : UserControl
 
     public override void Render(DrawingContext context)
     {
-        Trace.WriteLine("Parking Area Render");
         _parking.Draw(context);
+    }
+    
+    // interface
+    
+    public void AddVehicle(bool extended = false)
+    {
+        Random rnd = new();
+
+        Color RandomColor() =>
+            Color.FromArgb(0xff, (byte) rnd.Next(0, 256), (byte) rnd.Next(0, 256), (byte) rnd.Next(0, 256));
+
+        IDrawObject vehicle;
+        if (extended)
+        {
+            vehicle = new Models.TipTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor(), 
+                true, RandomColor(), true, RandomColor());
+        }
+        else
+        {
+            vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor());
+        }
+        
+        Trace.WriteLine("Create '" + vehicle.GetType().Name + "' Handler / Speed " + vehicle.Speed + 
+                        " / Weight " + vehicle.Weight + " / Color " + vehicle.BodyColor.ToString());
+
+        if (_parking + vehicle)
+        {
+            Draw();
+        }
+        else
+        {
+            Helpers.MessageBox.Show("Парковка переполнена");
+        }
     }
 }

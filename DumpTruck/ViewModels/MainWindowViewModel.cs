@@ -40,12 +40,12 @@ namespace DumpTruck.ViewModels
 
         private void CreateNewSimpleModel()
         {
-            // _area.InitializeVehicle();
+            ParkingArea.AddVehicle();
         }
         
         private void CreateNewExtendedModel()
         {
-            // _area.InitializeVehicle(true);
+            ParkingArea.AddVehicle(true);
         }
 
         private void TakeFromParking()
