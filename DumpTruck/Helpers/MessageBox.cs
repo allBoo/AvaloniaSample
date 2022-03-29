@@ -1,4 +1,3 @@
-using Avalonia.Controls;
 using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -18,6 +17,6 @@ public static class MessageBox
             ContentMessage = message,
             FontFamily = "Microsoft Sans Serif"
         });
-        messageBoxStandardWindow.Show();
+        messageBoxStandardWindow.ShowDialog(App.MainWindow());
     }
 }

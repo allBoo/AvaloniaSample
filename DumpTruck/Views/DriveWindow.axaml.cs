@@ -1,13 +1,14 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using DumpTruck.Models;
 using DumpTruck.ViewModels;
 
 namespace DumpTruck.Views;
 
 public partial class DriveWindow : Window
 {
-    public DriveWindow()
+    public DriveWindow(IDrawObject vehicle)
     {
         InitializeComponent();
 #if DEBUG
@@ -15,7 +16,7 @@ public partial class DriveWindow : Window
 #endif
         
         // create interaction area for the model
-        DriveArea area = new DriveArea();
+        DriveArea area = new DriveArea(vehicle);
         
         // search DriveArea container and insert DriveArea control into it
         var driveAreaPanel = this.FindControl<Panel>("DriveArea");
@@ -25,6 +26,11 @@ public partial class DriveWindow : Window
         DataContext = new DriveWindowViewModel(area);
     }
 
+    public DriveWindow()
+    {
+        // used by Designer
+    }
+    
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);

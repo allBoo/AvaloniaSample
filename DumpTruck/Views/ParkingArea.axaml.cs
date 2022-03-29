@@ -92,4 +92,20 @@ public partial class ParkingArea : UserControl
             Helpers.MessageBox.Show("Парковка переполнена");
         }
     }
+
+    public void TakeFromParking(int index)
+    {
+        var car = _parking - index;
+        if (car != null)
+        {
+            // 
+            var driveWindow = new DriveWindow(car);
+            Helpers.App.ShowDialog(driveWindow);
+            Draw();
+        }
+        else
+        {
+            Helpers.MessageBox.Show("Парковочное место пусто");
+        }
+    }
 }

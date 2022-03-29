@@ -53,7 +53,8 @@ namespace DumpTruck.ViewModels
             if (!string.IsNullOrEmpty(ParkingPlace))
             {
                 var parkingPlaceIdx = Convert.ToInt32(ParkingPlace);
-                Trace.WriteLine("Take from place " + ParkingPlace);
+                Trace.WriteLine("Take from place " + parkingPlaceIdx);
+                ParkingArea.TakeFromParking(parkingPlaceIdx);
             }
         }
     }

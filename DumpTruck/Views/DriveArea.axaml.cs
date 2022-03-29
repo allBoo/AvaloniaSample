@@ -13,17 +13,25 @@ namespace DumpTruck.Views;
 
 public partial class DriveArea : UserControl
 {
-    private IDrawObject? _vehicle;
+    private IDrawObject _vehicle;
 
     public int VehicleSpeed => _vehicle.Speed;
     public float VehicleWeight => _vehicle.Weight;
     public string VehicleBodyColor => _vehicle.BodyColor.ToString();
 
-    public DriveArea()
+    public DriveArea(IDrawObject vehicle)
     {
+        _vehicle = vehicle;
         InitializeComponent();
 
         DataContext = new DriveAreaViewModel(this);
+        
+        Draw();
+    }
+
+    public DriveArea()
+    {
+        // used by Designer
     }
 
     private void InitializeComponent()
@@ -54,31 +62,6 @@ public partial class DriveArea : UserControl
         InvalidateVisual();
     }
 
-    public void InitializeVehicle(bool extended = false)
-    {
-        Random rnd = new();
-
-        Color RandomColor() =>
-            Color.FromArgb(0xff, (byte) rnd.Next(0, 256), (byte) rnd.Next(0, 256), (byte) rnd.Next(0, 256));
-
-        if (extended)
-        {
-            _vehicle = new Models.TipTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor(), 
-                true, RandomColor(), true, RandomColor());
-        }
-        else
-        {
-            _vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor());
-        }
-
-        Rect bounds = AreaBounds();
-        _vehicle.SetObject(rnd.Next(10, 100), rnd.Next(10, 100), (int)bounds.Width, (int)bounds.Height);
-
-        Trace.WriteLine("Create '" + _vehicle.GetType().Name + "' Handler / Speed " + _vehicle.Speed + 
-                        " / Weight " + _vehicle.Weight + " / Color " + _vehicle.BodyColor.ToString());
-        Draw();
-    }
-    
     public void Move(string directionStr)
     {
         Trace.WriteLine("MoveCommand " + directionStr);
