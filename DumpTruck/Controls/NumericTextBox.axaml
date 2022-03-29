@@ -1,0 +1,5 @@
+<TextBox xmlns="https://github.com/avaloniaui"
+         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         x:Class="DumpTruck.Controls.NumericTextBox"
+         Watermark="_______" KeyUp="OnKeyUp">
+</TextBox>

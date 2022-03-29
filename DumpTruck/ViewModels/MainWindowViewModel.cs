@@ -10,31 +10,14 @@ namespace DumpTruck.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private DriveArea _area { get; }
-
-        public int Speed => _area.VehicleSpeed;
-        public float Weight => _area.VehicleWeight;
-        public string BodyColor => _area.VehicleBodyColor;
-        
-        private int? _testIndex;
-        public int? TestIndex
-        {
-            get => _testIndex;
-            set => this.RaiseAndSetIfChanged(ref _testIndex, value);
-        }
-
         public ICommand CreateSimpleCommand { get; }
         public ICommand CreateExtendedCommand { get; }
-        public ICommand RunTestCommand { get; }
         public ICommand ExitCommand { get; }
         
-        public MainWindowViewModel(DriveArea area)
+        public MainWindowViewModel()
         {
-            _area = area;
-
             CreateSimpleCommand = ReactiveCommand.Create(CreateNewSimpleModel);
             CreateExtendedCommand = ReactiveCommand.Create(CreateNewExtendedModel);
-            RunTestCommand = ReactiveCommand.Create(RunTest);
             
             ExitCommand = ReactiveCommand.Create(() =>
             {
@@ -46,41 +29,19 @@ namespace DumpTruck.ViewModels
             });
         }
 
-        public MainWindowViewModel()
-        {
-            // used by Designer
-        }
+        // public MainWindowViewModel()
+        // {
+        //     // used by Designer
+        // }
 
         void CreateNewSimpleModel()
         {
-            _area.InitializeVehicle();
-
-            _updateStatusBar();
+            // _area.InitializeVehicle();
         }
         
         void CreateNewExtendedModel()
         {
-            _area.InitializeVehicle(true);
-
-            _updateStatusBar();
-        }
-        
-        private void _updateStatusBar()
-        {
-            this.RaisePropertyChanged(nameof(Speed));
-            this.RaisePropertyChanged(nameof(Weight));
-            this.RaisePropertyChanged(nameof(BodyColor));
-        }
-
-        void RunTest()
-        {
-            Trace.WriteLine("Run Test #" + TestIndex);
-            switch(TestIndex)
-            {
-                case 0:
-                    _area.RunTest(new BordersTestObject());
-                    break;
-            }
+            // _area.InitializeVehicle(true);
         }
     }
 }
