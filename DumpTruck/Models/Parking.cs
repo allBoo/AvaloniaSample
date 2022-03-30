@@ -12,11 +12,6 @@ public class Parking<T> where T : class, IDrawObject
     private T?[] _places;
 
     /// <summary>
-    /// Индекс массива объектов
-    /// </summary>
-    private int _index;
-    
-    /// <summary>
     /// Ширина окна отрисовки
     /// </summary>
     private int _pictureWidth;
