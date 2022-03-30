@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using DumpTruck.ViewModels;
@@ -11,7 +12,9 @@ namespace DumpTruck.Views
         public MainWindow()
         {
             InitializeComponent();
-            
+#if DEBUG
+            this.AttachDevTools();
+#endif
             // search DriveArea container and insert DriveArea control into it
             var parking = this.FindControl<ParkingArea>("ParkingArea");
 

@@ -21,8 +21,7 @@ public partial class DriveArea : UserControl
 
     public DriveArea(IDrawObject vehicle)
     {
-        _vehicle = vehicle;
-        _vehicle.SetObject(0, 0);
+        SetVehicle(vehicle);
         InitializeComponent();
 
         DataContext = new DriveAreaViewModel(this);
@@ -33,6 +32,12 @@ public partial class DriveArea : UserControl
     public DriveArea()
     {
         // used by Designer
+    }
+
+    public void SetVehicle(IDrawObject vehicle)
+    {
+        _vehicle = vehicle;
+        _vehicle.SetObject(0, 0);
     }
 
     private void InitializeComponent()

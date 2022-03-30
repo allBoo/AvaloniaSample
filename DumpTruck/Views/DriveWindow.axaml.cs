@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
@@ -12,9 +11,6 @@ public partial class DriveWindow : Window
     public DriveWindow(IDrawObject vehicle)
     {
         InitializeComponent();
-#if DEBUG
-        this.AttachDevTools();
-#endif
         
         // create interaction area for the model
         DriveArea area = new DriveArea(vehicle);
