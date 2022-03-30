@@ -12,6 +12,7 @@
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
         ExtendClientAreaToDecorationsHint="True"
+        KeyUp="WindowOnKeyUp"
 >
     <Design.DataContext>
         <vm:DriveWindowViewModel/>
