@@ -1,15 +1,16 @@
 using Avalonia;
 using Avalonia.Media;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace DumpTruck.Models;
 
 public class Parking<T> where T : class, IDrawObject
 {
     /// <summary>
-    /// Массив объектов, которые храним
+    /// Список объектов, которые храним
     /// </summary>
-    private T?[] _places;
+    private readonly List<T> _places;
 
     /// <summary>
     /// Ширина окна отрисовки
@@ -31,9 +32,20 @@ public class Parking<T> where T : class, IDrawObject
     /// </summary>
     private readonly int _placeSizeHeight = 90;
 
+    /// <summary>
+    /// Ширина парковки (кол-во паркомест)
+    /// </summary>
     private int Width => _pictureWidth / _placeSizeWidth;
     
+    /// <summary>
+    /// Высота парковки (кол-во паркомест)
+    /// </summary>
     private int Height => _pictureHeight / _placeSizeHeight;
+    
+    /// <summary>
+    /// Максимальное количество мест на парковке
+    /// </summary>
+    private int Capacity => Width * Height;
     
     /// <summary>
     /// Конструктор
@@ -42,9 +54,9 @@ public class Parking<T> where T : class, IDrawObject
     /// <param name="picHeight">Рамзер парковки - высота</param>
     public Parking(int picWidth, int picHeight)
     {
-        _places = new T[Width * Height];
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
+        _places = new List<T>(Capacity);
     }
     
     /// <summary>
@@ -56,13 +68,10 @@ public class Parking<T> where T : class, IDrawObject
     /// <returns></returns>
     public static bool operator +(Parking<T> p, T car)
     {
-        for (int i = 0; i < p._places.Length; i++)
+        if (p._places.Count < p.Capacity)
         {
-            if (p._places[i] == null)
-            {
-                p._places[i] = car;
-                return true;
-            }
+            p._places.Add(car);
+            return true;
         }
 
         return false;
@@ -77,10 +86,10 @@ public class Parking<T> where T : class, IDrawObject
     /// <returns></returns>
     public static T? operator -(Parking<T> p, int index)
     {
-        if (index >= 0 && index < p._places.Length && p._places[index] != null)
+        if (index >= 0 && index < p._places.Count)
         {
             var taken = p._places[index];
-            p._places[index] = null;
+            p._places.RemoveAt(index);
             
             return taken;
         }
@@ -95,22 +104,21 @@ public class Parking<T> where T : class, IDrawObject
     /// <param name="picHeight">Рамзер парковки - высота</param>
     public void Resize(int picWidth, int picHeight)
     {
+        int oldCapacity = Capacity;
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
-        int newParkingSize = Width * Height;
         
         // expand or reduce parking
-        if (newParkingSize != _places.Length)
+        if (Capacity != oldCapacity)
         {
             Trace.WriteLine("Parking new Dimensions: Width = " + Width + " / Height = " + Height);
 
-            T?[] newParking = new T[newParkingSize];
-            for (int i = 0; i < _places.Length && i < newParkingSize; i++)
+            // reduce parking
+            if (_places.Count > Capacity)
             {
-                newParking[i] = _places[i];
+                Trace.WriteLine("Reduce Parking to the new Capacity " + Capacity);
+                _places.RemoveRange(Capacity, _places.Count - Capacity);
             }
-
-            _places = newParking;
         }
     }
     
@@ -121,20 +129,17 @@ public class Parking<T> where T : class, IDrawObject
     public void Draw(DrawingContext g)
     {
         DrawMarking(g);
-        for (int i = 0; i < _places.Length; i++)
+        for (int i = 0; i < _places.Count; i++)
         {
-            if (_places[i] != null)
-            {
-                var dimensions = _places[i].GetDimensions();
-                int topOffset = (_placeSizeHeight - dimensions.Height) / 2;
-            
-                _places[i].SetObject(5 + (i / Height) * _placeSizeWidth + 5, 
-                    i % Height * _placeSizeHeight + topOffset, _pictureWidth, _pictureHeight);
-                _places[i].DrawObject(g);
-            }
+            var dimensions = _places[i].GetDimensions();
+            int topOffset = (_placeSizeHeight - dimensions.Height) / 2;
+        
+            _places[i].SetObject(5 + (i / Height) * _placeSizeWidth + 5, 
+                i % Height * _placeSizeHeight + topOffset, _pictureWidth, _pictureHeight);
+            _places[i].DrawObject(g);
         }
     }
-    
+
     /// <summary>
     /// Метод отрисовки разметки парковочных мест
     /// </summary>
