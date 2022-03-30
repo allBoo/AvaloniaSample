@@ -122,9 +122,9 @@ namespace DumpTruck.ViewModels
             }
         }
         
-        private void DeleteParking(int index)
+        private async void DeleteParking(int index)
         {
-            if (index > -1)
+            if (index > -1 && await Helpers.MessageBox.Confirm("Удалить парковку?"))
             {
                 Trace.WriteLine("Delete parking " + index + " / " + ParkingItems[index]);
                 if (_parkingCollection.DelParking(ParkingItems[index]))
