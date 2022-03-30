@@ -11,16 +11,19 @@ namespace DumpTruck.Views;
 
 public partial class ParkingArea : UserControl
 {
-    private readonly Parking<IVehicle> _parking;
+    private Parking<IVehicle>? _parking;
     
     public ParkingArea()
     {
         InitializeComponent();
-
-        var bounds = AreaBounds();
-        Trace.WriteLine("Initial parking bounds " + bounds);
-        _parking = new Parking<IVehicle>((int)bounds.Width, (int)bounds.Height);
         Draw();
+    }
+
+    public void SetParking(Parking<IVehicle>? parking)
+    {
+        _parking = parking;
+        
+        Resize(AreaBounds());
     }
     
     private void InitializeComponent()
@@ -51,19 +54,21 @@ public partial class ParkingArea : UserControl
     public void Resize(Rect newSize)
     {
         Trace.WriteLine("Parking Area Size Changed " + newSize);
-        _parking.Resize((int)newSize.Width, (int)newSize.Height);
+        _parking?.Resize((int)newSize.Width, (int)newSize.Height);
         Draw();
     }
 
     public override void Render(DrawingContext context)
     {
-        _parking.Draw(context);
+        _parking?.Draw(context);
     }
     
     // interface
 
     public async void AddDumpTruck()
     {
+        if (_parking == null) return;
+        
         var color = await Helpers.ColorDialog.ShowDialog("Цвет кузова");
         if (color != null)
         {
@@ -75,6 +80,8 @@ public partial class ParkingArea : UserControl
     
     public async void AddTipTruck()
     {
+        if (_parking == null) return;
+        
         var bodyColor = await Helpers.ColorDialog.ShowDialog("Цвет кузова");
         if (bodyColor != null)
         {
@@ -96,6 +103,8 @@ public partial class ParkingArea : UserControl
 
     private void AddToParking(IVehicle vehicle)
     {
+        if (_parking == null) return;
+        
         Trace.WriteLine("Add '" + vehicle.GetType().Name + "' Car / Speed " + vehicle.Speed + 
                         " / Weight " + vehicle.Weight + " / Color " + vehicle.BodyColor);
 
@@ -111,6 +120,8 @@ public partial class ParkingArea : UserControl
 
     public void TakeFromParking(int index)
     {
+        if (_parking == null) return;
+        
         var car = _parking - index;
         if (car != null)
         {

@@ -24,6 +24,11 @@ public class ParkingCollection
     /// Высота окна отрисовки
     /// </summary>
     private readonly int _pictureHeight;
+
+    /// <summary>
+    /// Amount of parkings
+    /// </summary>
+    public int Count => _parkingStages.Count;
     
     /// <summary>
     /// Конструктор

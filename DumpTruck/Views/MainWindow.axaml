@@ -5,7 +5,7 @@
         xmlns:uc="using:DumpTruck.Controls"
         xmlns:vm="using:DumpTruck.ViewModels"
         xmlns:v="using:DumpTruck.Views"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
         x:Class="DumpTruck.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="DumpTruck Parking"
@@ -50,15 +50,46 @@
                 <Separator BorderThickness="1,0,0,0" BorderBrush="gray"
                            VerticalAlignment="Stretch" HorizontalAlignment="Right"
                            Margin="0 0 180 0" Width="1"></Separator>
-                <StackPanel Margin="0 0 0 0" Spacing="10" Width="180"
+                <StackPanel Margin="0 0 0 0" Spacing="10" Width="180" 
                             HorizontalAlignment="Right">
                     <Panel></Panel>
+                    
+                    <StackPanel Spacing="10" Margin="10 0 10 0">
+                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Парковки:</TextBlock>
+                        <TextBox Text="{Binding NewParkingName}"></TextBox>
+                        <Button HorizontalAlignment="Center"
+                                Command="{Binding CreateParkingCommand}">
+                            <TextBlock TextWrapping="Wrap">Добавить парковку</TextBlock>
+                        </Button>
+                    
+                        <Panel></Panel>
+                        <ListBox Height="160" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                 Background="gray" Items="{Binding ParkingItems}"
+                                 SelectedIndex="{Binding SelectedParkingIndex}"
+                                 >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="5" Padding="1">
+                                        <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Button HorizontalAlignment="Center"
+                                Command="{Binding DeleteParkingCommand}" CommandParameter="{Binding SelectedParkingIndex}">
+                            <TextBlock TextWrapping="Wrap">Удалить парковку</TextBlock>
+                        </Button>
+                    </StackPanel>
+                    
+                    <Panel Height="50"></Panel>
                     <Button HorizontalAlignment="Center"
-                            Command="{Binding CreateSimpleCommand}" HotKey="Ctrl+N">
+                            Command="{Binding CreateSimpleCommand}" 
+                            IsEnabled="{Binding IsParkingActive}" HotKey="Ctrl+N">
                         <TextBlock TextWrapping="Wrap">Припарковать грузовик</TextBlock>
                     </Button>
                     <Button HorizontalAlignment="Center"
-                            Command="{Binding CreateExtendedCommand}" HotKey="Ctrl+M" >
+                            Command="{Binding CreateExtendedCommand}" 
+                            IsEnabled="{Binding IsParkingActive}" HotKey="Ctrl+M" >
                         <TextBlock TextWrapping="Wrap">Припарковать самосвал</TextBlock>
                     </Button>
                     
@@ -74,7 +105,8 @@
                                 </WrapPanel>
                                 
                                 <Button HorizontalAlignment="Center"
-                                        Command="{Binding TakeObjectCommand}">
+                                        Command="{Binding TakeObjectCommand}"
+                                        IsEnabled="{Binding IsParkingActive}">
                                     <TextBlock TextWrapping="Wrap">Забрать</TextBlock>
                                 </Button>
                             </StackPanel>

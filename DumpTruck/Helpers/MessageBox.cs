@@ -19,4 +19,17 @@ public static class MessageBox
         });
         messageBoxStandardWindow.ShowDialog(App.MainWindow());
     }
+    
+    public static void ShowError(string message)
+    {
+        var messageBoxStandardWindow = MessageBoxManager.GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        {
+            ButtonDefinitions = ButtonEnum.Ok,
+            ContentTitle = "Error",
+            ContentMessage = message + "   ",
+            FontFamily = "Microsoft Sans Serif",
+            Icon = Icon.Error
+        });
+        messageBoxStandardWindow.ShowDialog(App.MainWindow());
+    }
 }
