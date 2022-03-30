@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DumpTruck.Models;
 
-public class Parking<T> where T : class, IDrawObject
+public class Parking<T> where T : class, IVehicle
 {
     /// <summary>
     /// Список объектов, которые храним

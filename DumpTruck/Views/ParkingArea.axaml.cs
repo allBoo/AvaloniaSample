@@ -11,7 +11,7 @@ namespace DumpTruck.Views;
 
 public partial class ParkingArea : UserControl
 {
-    private readonly Parking<IDrawObject> _parking;
+    private readonly Parking<IVehicle> _parking;
     
     public ParkingArea()
     {
@@ -19,7 +19,7 @@ public partial class ParkingArea : UserControl
 
         var bounds = AreaBounds();
         Trace.WriteLine("Initial parking bounds " + bounds);
-        _parking = new Parking<IDrawObject>((int)bounds.Width, (int)bounds.Height);
+        _parking = new Parking<IVehicle>((int)bounds.Width, (int)bounds.Height);
         Draw();
     }
     
@@ -94,7 +94,7 @@ public partial class ParkingArea : UserControl
         }
     }
 
-    private void AddToParking(IDrawObject vehicle)
+    private void AddToParking(IVehicle vehicle)
     {
         Trace.WriteLine("Add '" + vehicle.GetType().Name + "' Car / Speed " + vehicle.Speed + 
                         " / Weight " + vehicle.Weight + " / Color " + vehicle.BodyColor);

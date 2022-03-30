@@ -13,13 +13,13 @@ namespace DumpTruck.Views;
 
 public partial class DriveArea : UserControl
 {
-    private IDrawObject _vehicle;
+    private IVehicle _vehicle;
 
     public int VehicleSpeed => _vehicle.Speed;
     public float VehicleWeight => _vehicle.Weight;
     public string VehicleBodyColor => _vehicle.BodyColor.ToString();
 
-    public DriveArea(IDrawObject vehicle)
+    public DriveArea(IVehicle vehicle)
     {
         SetVehicle(vehicle);
         InitializeComponent();
@@ -34,7 +34,7 @@ public partial class DriveArea : UserControl
         // used by Designer
     }
 
-    public void SetVehicle(IDrawObject vehicle)
+    public void SetVehicle(IVehicle vehicle)
     {
         _vehicle = vehicle;
         _vehicle.SetObject(0, 0);

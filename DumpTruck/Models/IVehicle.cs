@@ -2,7 +2,7 @@ using Avalonia.Media;
 
 namespace DumpTruck.Models;
 
-public interface IDrawObject
+public interface IVehicle
 {
     /// <summary>
     /// Скорость

@@ -9,7 +9,7 @@ namespace DumpTruck.Views;
 
 public partial class DriveWindow : Window
 {
-    public DriveWindow(IDrawObject vehicle)
+    public DriveWindow(IVehicle vehicle)
     {
         InitializeComponent();
 #if DEBUG

@@ -17,13 +17,13 @@ public abstract class AbstractTestObject
     /// <summary>
     /// Объект тестирования
     /// </summary>
-    protected IDrawObject _object;
+    protected IVehicle _object;
     
     /// <summary>
     /// Передача объекта
     /// </summary>
     /// <param name="obj"></param>
-    public void Init(IDrawObject obj)
+    public void Init(IVehicle obj)
     {
         _object = obj;
     }

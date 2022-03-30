@@ -9,7 +9,7 @@ using Point = Avalonia.Point;
 
 namespace DumpTruck.Models;
 
-public class DumpTruck : IDrawObject
+public class DumpTruck : IVehicle
 {
     /// <summary>
     /// Скорость
