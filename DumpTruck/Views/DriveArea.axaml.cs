@@ -22,6 +22,7 @@ public partial class DriveArea : UserControl
     public DriveArea(IDrawObject vehicle)
     {
         _vehicle = vehicle;
+        _vehicle.SetObject(0, 0);
         InitializeComponent();
 
         DataContext = new DriveAreaViewModel(this);
@@ -64,8 +65,6 @@ public partial class DriveArea : UserControl
 
     public void Move(string directionStr)
     {
-        Trace.WriteLine("MoveCommand " + directionStr);
-        
         Enum.TryParse(directionStr, out Direction direction);
         _vehicle?.MoveObject(direction);
         Draw();
@@ -73,7 +72,7 @@ public partial class DriveArea : UserControl
 
     public void Resize(Rect newSize)
     {
-        Trace.WriteLine("Size changed " + newSize);
+        Trace.WriteLine("Drive Area Size changed " + newSize);
         _vehicle?.ChangeBorders((int)newSize.Right, (int)newSize.Bottom);
     }
 

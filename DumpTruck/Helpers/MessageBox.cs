@@ -14,7 +14,7 @@ public static class MessageBox
         {
             ButtonDefinitions = ButtonEnum.Ok,
             ContentTitle = DefaultTitle,
-            ContentMessage = message,
+            ContentMessage = message + "   ",
             FontFamily = "Microsoft Sans Serif"
         });
         messageBoxStandardWindow.ShowDialog(App.MainWindow());

@@ -61,27 +61,43 @@ public partial class ParkingArea : UserControl
     }
     
     // interface
-    
-    public void AddVehicle(bool extended = false)
+
+    public async void AddDumpTruck()
     {
-        Random rnd = new();
-
-        Color RandomColor() =>
-            Color.FromArgb(0xff, (byte) rnd.Next(0, 256), (byte) rnd.Next(0, 256), (byte) rnd.Next(0, 256));
-
-        IDrawObject vehicle;
-        if (extended)
+        var color = await Helpers.ColorDialog.ShowDialog("Цвет кузова");
+        if (color != null)
         {
-            vehicle = new Models.TipTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor(), 
-                true, RandomColor(), true, RandomColor());
+            Random rnd = new();
+            var vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), (Color)color);
+            AddToParking(vehicle);
         }
-        else
+    }
+    
+    public async void AddTipTruck()
+    {
+        var bodyColor = await Helpers.ColorDialog.ShowDialog("Цвет кузова");
+        if (bodyColor != null)
         {
-            vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), RandomColor());
+            var tipperColor = await Helpers.ColorDialog.ShowDialog("Цвет самосвала");
+            if (tipperColor != null)
+            {
+                var tentColor = await Helpers.ColorDialog.ShowDialog("Цвет тента");
+                if (tentColor != null)
+                {
+                    Random rnd = new();
+                    var vehicle = new Models.TipTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), (Color)bodyColor, 
+                        true, (Color)tipperColor, true, (Color)tentColor);
+                    AddToParking(vehicle);
+                }
+            }
+            
         }
-        
-        Trace.WriteLine("Create '" + vehicle.GetType().Name + "' Handler / Speed " + vehicle.Speed + 
-                        " / Weight " + vehicle.Weight + " / Color " + vehicle.BodyColor.ToString());
+    }
+
+    private void AddToParking(IDrawObject vehicle)
+    {
+        Trace.WriteLine("Add '" + vehicle.GetType().Name + "' Car / Speed " + vehicle.Speed + 
+                        " / Weight " + vehicle.Weight + " / Color " + vehicle.BodyColor);
 
         if (_parking + vehicle)
         {
