@@ -1,0 +1,140 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:DumpTruck.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
+        x:Class="DumpTruck.Views.CarConfigWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="New Car Config"
+        
+        MinHeight="400" MinWidth="800" Width="800" Height="400"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        KeyUp="WindowOnKeyUp"
+>
+    <Design.DataContext>
+        <vm:CarConfigWindowViewModel/>
+    </Design.DataContext>
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        
+        <Grid RowDefinitions="*,*" ColumnDefinitions="*,*,2*" Margin="5">
+            
+            <Border Grid.Row="0" Grid.Column="0" BorderThickness="1" BorderBrush="gray" Margin="10 8 10 1" >
+                <Panel>
+                    <TextBlock TextWrapping="Wrap" FontSize="10" TextAlignment="Center" 
+                               Margin="5 -6" VerticalAlignment="Top" Background="gray">Тип кузова</TextBlock>
+                    
+                    <StackPanel >
+                        <Border BorderThickness="1" BorderBrush="gray" Margin="20 20 20 10" Name="SimpleModel">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center" Name="SimpleModelText"
+                                       Margin="10">Обычный грузовик</TextBlock>
+                        </Border>
+                        
+                        <Border BorderThickness="1" BorderBrush="gray" Margin="20" Name="ExtendedModel">
+                            <TextBlock TextWrapping="Wrap" TextAlignment="Center" Name="ExtendedModelText"
+                                       Margin="20">Самосвал</TextBlock>
+                        </Border>
+                    </StackPanel>
+                </Panel>
+            </Border>
+            
+            <Border Grid.Row="0" Grid.Column="1" BorderThickness="1" BorderBrush="gray" Background="#00000000"
+                    Margin="10 8 10 1" DragDrop.AllowDrop="True" Name="ModelReceiver">
+                <Border BorderThickness="1" BorderBrush="gray" Margin="20" Name="ModelView"></Border>
+            </Border>
+            
+            <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" Margin="10 15 10 1" >
+                <Panel>
+                    <TextBlock TextWrapping="Wrap" FontSize="10" TextAlignment="Center" 
+                               Margin="5 -6" VerticalAlignment="Top" Background="gray">Параметры</TextBlock>
+                    
+                    <Grid RowDefinitions="*" ColumnDefinitions="*,*" Margin="5">
+                        <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="5" Margin="5 10 10 0">
+                            <Label Target="Speed">Макс. скорость</Label>
+                            <NumericUpDown Name="Speed" Minimum="100" Maximum="300"></NumericUpDown>
+                            
+                            <Label Target="Weight">Вес авто</Label>
+                            <NumericUpDown Name="Weight" Minimum="1000" Maximum="5000"></NumericUpDown>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="5" Margin="10 10 10 0">
+                            <CheckBox Name="Tipper" Content="Кузов"></CheckBox>
+                            <CheckBox Name="Tent" Content="Тент"></CheckBox>
+                        </StackPanel>
+                    </Grid>
+                    
+                </Panel>
+            </Border>
+            
+            <Panel Grid.Row="0" Grid.Column="2" Grid.RowSpan="2">
+                <DockPanel>
+                    <Border BorderThickness="1" BorderBrush="gray" Margin="10 8 10 1" DockPanel.Dock="Top">
+                        <Panel>
+                            <TextBlock TextWrapping="Wrap" FontSize="10" TextAlignment="Center" 
+                                       Margin="5 -6" VerticalAlignment="Top" Background="gray">Цвета</TextBlock>
+                            
+                            <Grid ColumnDefinitions="*,*,*,*,*,*" RowDefinitions="*,*,*">
+                                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" Background="#00000000"
+                                        Margin="5 20 5 10" DragDrop.AllowDrop="True" Name="BodyColorReceiver">
+                                    
+                                    <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center" VerticalAlignment="Center"
+                                               Margin="10">Основной цвет</TextBlock>
+                                </Border>
+                                
+                                <Border Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" Background="#00000000"
+                                        Margin="5 20 5 10" DragDrop.AllowDrop="True" Name="TipperColorReceiver">
+                                    
+                                    <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center" VerticalAlignment="Center" 
+                                               Margin="10">Цвет кузова</TextBlock>
+                                </Border>
+                                
+                                <Border Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" Background="#00000000"
+                                        Margin="5 20 5 10" DragDrop.AllowDrop="True" Name="TentColorReceiver">
+                                    
+                                    <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center" VerticalAlignment="Center" 
+                                               Margin="10">Цвет тента</TextBlock>
+                                </Border>
+                                
+                                <Rectangle Grid.Row="1" Grid.Column="0" Width="50" Height="50" Name="BodyColor1" Fill="red" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="1" Grid.Column="1" Width="50" Height="50" Name="BodyColor2" Fill="yellow" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="0" Width="50" Height="50" Name="BodyColor3" Fill="gray" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="1" Width="50" Height="50" Name="BodyColor4" Fill="orange" Margin="5"></Rectangle>
+                                
+                                <Rectangle Grid.Row="1" Grid.Column="2" Width="50" Height="50" Name="TipperColor1" Fill="black" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="1" Grid.Column="3" Width="50" Height="50" Name="TipperColor2" Fill="white" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="2" Width="50" Height="50" Name="TipperColor3" Fill="green" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="3" Width="50" Height="50" Name="TipperColor4" Fill="blue" Margin="5"></Rectangle>
+                                
+                                <Rectangle Grid.Row="1" Grid.Column="4" Width="50" Height="50" Name="TentColor1" Fill="pink" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="1" Grid.Column="5" Width="50" Height="50" Name="TentColor2" Fill="lightblue" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="4" Width="50" Height="50" Name="TentColor3" Fill="lightgray" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="5" Width="50" Height="50" Name="TentColor4" Fill="lightgreen" Margin="5"></Rectangle>
+                            </Grid>
+                        </Panel>
+                    </Border>
+
+                    <StackPanel Spacing="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" >
+                        <Button Width="100">
+                            <TextBlock TextAlignment="Center">Добавить</TextBlock>
+                        </Button>
+                        <Button Width="100" Click="CancelClick">
+                            <TextBlock TextAlignment="Center">Отмена</TextBlock>
+                        </Button>
+                    </StackPanel>
+                    
+                </DockPanel>
+            </Panel>
+        </Grid>
+    </Panel>
+</Window>
