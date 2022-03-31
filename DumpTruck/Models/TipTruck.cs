@@ -9,22 +9,22 @@ public class TipTruck : DumpTruck
     /// <summary>
     /// Признак наличия кузова
     /// </summary>
-    public bool Tipper { private set; get; }
+    public bool Tipper { set; get; }
     
     /// <summary>
     /// Цвет кузова
     /// </summary>
-    public Color TipperColor { private set; get; }
+    public Color TipperColor { set; get; }
     
     /// <summary>
     /// Признак наличия тента
     /// </summary>
-    public bool Tent { private set; get; }
+    public bool Tent { set; get; }
     
     /// <summary>
     /// Цвет тента
     /// </summary>
-    public Color TentColor { private set; get; }
+    public Color TentColor { set; get; }
 
     /// <summary>
     /// Инициализация свойств

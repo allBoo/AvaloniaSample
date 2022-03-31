@@ -14,12 +14,12 @@ public class DumpTruck : IVehicle
     /// <summary>
     /// Скорость
     /// </summary>
-    public int Speed { private set; get; }
+    public int Speed { set; get; }
     
     /// <summary>
     /// Вес автомобиля
     /// </summary>
-    public float Weight { private set; get; }
+    public float Weight { set; get; }
     
     /// <summary>
     /// Шаг объекта
@@ -29,7 +29,7 @@ public class DumpTruck : IVehicle
     /// <summary>
     /// Цвет кузова
     /// </summary>
-    public Color BodyColor { private set; get; }
+    public Color BodyColor { set; get; }
     
     /// <summary>
     /// Левая координата отрисовки автомобиля

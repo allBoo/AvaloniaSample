@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:c="using:DumpTruck.Controls"
         xmlns:vm="using:DumpTruck.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
         x:Class="DumpTruck.Views.CarConfigWindow"
@@ -51,7 +52,7 @@
             
             <Border Grid.Row="0" Grid.Column="1" BorderThickness="1" BorderBrush="gray" Background="#00000000"
                     Margin="10 8 10 1" DragDrop.AllowDrop="True" Name="ModelReceiver">
-                <Border BorderThickness="1" BorderBrush="gray" Margin="20" Name="ModelView"></Border>
+                <c:Drawable BorderThickness="1" BorderBrush="gray" Margin="20" Name="ModelDrawArea"></c:Drawable>
             </Border>
             
             <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" Margin="10 15 10 1" >
@@ -62,15 +63,19 @@
                     <Grid RowDefinitions="*" ColumnDefinitions="*,*" Margin="5">
                         <StackPanel Grid.Column="0" Orientation="Vertical" Spacing="5" Margin="5 10 10 0">
                             <Label Target="Speed">Макс. скорость</Label>
-                            <NumericUpDown Name="Speed" Minimum="100" Maximum="300"></NumericUpDown>
+                            <NumericUpDown Name="Speed" Minimum="100" Maximum="300" Value="{Binding MaxSpeed}"></NumericUpDown>
                             
                             <Label Target="Weight">Вес авто</Label>
-                            <NumericUpDown Name="Weight" Minimum="1000" Maximum="5000"></NumericUpDown>
+                            <NumericUpDown Name="Weight" Minimum="1000" Maximum="5000" Value="{Binding Weight}"></NumericUpDown>
                         </StackPanel>
                         
                         <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="5" Margin="10 10 10 0">
-                            <CheckBox Name="Tipper" Content="Кузов"></CheckBox>
-                            <CheckBox Name="Tent" Content="Тент"></CheckBox>
+                            <CheckBox Name="Tipper" Content="Кузов" 
+                                      IsChecked="{Binding HasTipper}"
+                                      IsEnabled="{Binding IsExtended}"></CheckBox>
+                            <CheckBox Name="Tent" Content="Тент" 
+                                      IsChecked="{Binding HasTent}"
+                                      IsEnabled="{Binding IsExtended}"></CheckBox>
                         </StackPanel>
                     </Grid>
                     
@@ -85,21 +90,24 @@
                                        Margin="5 -6" VerticalAlignment="Top" Background="gray">Цвета</TextBlock>
                             
                             <Grid ColumnDefinitions="*,*,*,*,*,*" RowDefinitions="*,*,*">
-                                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" Background="#00000000"
+                                <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" 
+                                        Background="{Binding BodyColor}"
                                         Margin="5 20 5 10" DragDrop.AllowDrop="True" Name="BodyColorReceiver">
                                     
                                     <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center" VerticalAlignment="Center"
                                                Margin="10">Основной цвет</TextBlock>
                                 </Border>
                                 
-                                <Border Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" Background="#00000000"
+                                <Border Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" 
+                                        Background="{Binding TipperColor}"
                                         Margin="5 20 5 10" DragDrop.AllowDrop="True" Name="TipperColorReceiver">
                                     
                                     <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center" VerticalAlignment="Center" 
                                                Margin="10">Цвет кузова</TextBlock>
                                 </Border>
                                 
-                                <Border Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" Background="#00000000"
+                                <Border Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" BorderThickness="1" BorderBrush="gray" 
+                                        Background="{Binding TentColor}"
                                         Margin="5 20 5 10" DragDrop.AllowDrop="True" Name="TentColorReceiver">
                                     
                                     <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center" VerticalAlignment="Center" 
