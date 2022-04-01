@@ -10,7 +10,7 @@ namespace DumpTruck.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private readonly ParkingCollection _parkingCollection;
+        private readonly GarageCollection _garageCollection;
         private GarageArea GarageArea { get; }
         
         private string? _garagePlace;
@@ -20,52 +20,52 @@ namespace DumpTruck.ViewModels
             set => this.RaiseAndSetIfChanged(ref _garagePlace, value);
         }
 
-        private string? _newParkingName;
-        public string? NewParkingName
+        private string? _newGarageName;
+        public string? NewGarageName
         {
-            get => _newParkingName;
-            set => this.RaiseAndSetIfChanged(ref _newParkingName, value);
+            get => _newGarageName;
+            set => this.RaiseAndSetIfChanged(ref _newGarageName, value);
         }
 
-        private int? _selectedParkingIndex;
-        public int? SelectedParkingIndex
+        private int? _selectedGarageIndex;
+        public int? SelectedGarageIndex
         {
-            get => _selectedParkingIndex;
+            get => _selectedGarageIndex;
             set
             {
-                this.RaiseAndSetIfChanged(ref _selectedParkingIndex, value);
-                ParkingChangedCommand.Execute(value);
-                this.RaisePropertyChanged(nameof(IsParkingActive));
+                this.RaiseAndSetIfChanged(ref _selectedGarageIndex, value);
+                GarageChangedCommand.Execute(value);
+                this.RaisePropertyChanged(nameof(IsGarageActive));
             }
         }
         
-        public bool? IsParkingActive => SelectedParkingIndex > -1;
+        public bool? IsGarageActive => SelectedGarageIndex > -1;
 
-        public ObservableCollection<string> ParkingItems => new (_parkingCollection.Keys);
+        public ObservableCollection<string> GarageItems => new (_garageCollection.Keys);
 
         public ICommand ExitCommand { get; }
         public ICommand CreateSimpleCommand { get; }
         public ICommand CreateExtendedCommand { get; }
         public ICommand TakeObjectCommand { get; }
-        public ICommand CreateParkingCommand { get; }
-        public ICommand DeleteParkingCommand { get; }
-        public ICommand ParkingChangedCommand { get; }
+        public ICommand CreateGarageCommand { get; }
+        public ICommand DeleteGarageCommand { get; }
+        public ICommand GarageChangedCommand { get; }
 
-        // flag to prevent handling of the ParkingChanged event
+        // flag to prevent handling of the GarageChanged event
         private bool _lockChanges = false;
         
         public MainWindowViewModel(GarageArea garageArea)
         {
             GarageArea = garageArea;
-            _parkingCollection = new ParkingCollection(0, 0);
+            _garageCollection = new GarageCollection(0, 0);
             
             ExitCommand = ReactiveCommand.Create(Helpers.App.Exit);
             CreateSimpleCommand = ReactiveCommand.Create(CreateNewSimpleModel);
             CreateExtendedCommand = ReactiveCommand.Create(CreateNewExtendedModel);
             TakeObjectCommand = ReactiveCommand.Create(TakeFromGarage);
-            CreateParkingCommand = ReactiveCommand.Create(CreateNewParking);
-            DeleteParkingCommand = ReactiveCommand.Create<int>(DeleteParking);
-            ParkingChangedCommand = ReactiveCommand.Create<int>(ParkingChanged);
+            CreateGarageCommand = ReactiveCommand.Create(CreateNewGarage);
+            DeleteGarageCommand = ReactiveCommand.Create<int>(DeleteGarage);
+            GarageChangedCommand = ReactiveCommand.Create<int>(GarageChanged);
         }
 
         public MainWindowViewModel()
@@ -76,16 +76,16 @@ namespace DumpTruck.ViewModels
         private void ReloadLevels()
         {
             _lockChanges = true;
-            this.RaisePropertyChanged(nameof(ParkingItems));
+            this.RaisePropertyChanged(nameof(GarageItems));
             _lockChanges = false;
             
-            if (SelectedParkingIndex is null or -1 && _parkingCollection.Count > 0)
+            if (SelectedGarageIndex is null or -1 && _garageCollection.Count > 0)
             {
-                SelectedParkingIndex = 0;
+                SelectedGarageIndex = 0;
             }
-            else if (_parkingCollection.Count == 0)
+            else if (_garageCollection.Count == 0)
             {
-                SelectedParkingIndex = -1;                
+                SelectedGarageIndex = -1;                
             }
         }
 
@@ -109,48 +109,48 @@ namespace DumpTruck.ViewModels
             }
         }
 
-        private void CreateNewParking()
+        private void CreateNewGarage()
         {
-            if (!string.IsNullOrEmpty(NewParkingName))
+            if (!string.IsNullOrEmpty(NewGarageName))
             {
-                if (!_parkingCollection.AddParking(NewParkingName))
+                if (!_garageCollection.AddGarage(NewGarageName))
                 {
-                    Helpers.MessageBox.ShowError("Парковка с таким названием уже существует");
+                    Helpers.MessageBox.ShowError("Гараж с таким названием уже существует");
                 }
 
                 ReloadLevels();
             }
         }
         
-        private async void DeleteParking(int index)
+        private async void DeleteGarage(int index)
         {
-            if (index > -1 && await Helpers.MessageBox.Confirm("Удалить парковку?"))
+            if (index > -1 && await Helpers.MessageBox.Confirm("Удалить гараж?"))
             {
-                Trace.WriteLine("Delete parking " + index + " / " + ParkingItems[index]);
-                if (_parkingCollection.DelParking(ParkingItems[index]))
+                Trace.WriteLine("Delete Garage " + index + " / " + GarageItems[index]);
+                if (_garageCollection.DelGarage(GarageItems[index]))
                 {
                     ReloadLevels();
                 }
                 else
                 {
-                    Helpers.MessageBox.ShowError("Нет такой парковки");
+                    Helpers.MessageBox.ShowError("Нет такого гаража");
                 }
             }
         }
 
-        private void ParkingChanged(int index)
+        private void GarageChanged(int index)
         {
             if (_lockChanges) return;
             
             if (index > -1)
             {
-                Trace.WriteLine("Parking Changed to " + index + " / " + ParkingItems[index]);
-                ParkingArea.SetParking(_parkingCollection[ParkingItems[index]]);
+                Trace.WriteLine("Garage Changed to " + index + " / " + GarageItems[index]);
+                GarageArea.SetGarage(_garageCollection[GarageItems[index]]);
             }
             else
             {
-                Trace.WriteLine("Parking Unselected");
-                ParkingArea.SetParking(null);
+                Trace.WriteLine("Garage Unselected");
+                GarageArea.SetGarage(null);
             }
         }
     }

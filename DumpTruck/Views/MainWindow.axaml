@@ -55,17 +55,17 @@
                     <Panel></Panel>
                     
                     <StackPanel Spacing="10" Margin="10 0 10 0">
-                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Парковки:</TextBlock>
-                        <TextBox Text="{Binding NewParkingName}"></TextBox>
+                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Гаражи:</TextBlock>
+                        <TextBox Text="{Binding NewGarageName}"></TextBox>
                         <Button HorizontalAlignment="Center"
-                                Command="{Binding CreateParkingCommand}">
-                            <TextBlock TextWrapping="Wrap">Добавить парковку</TextBlock>
+                                Command="{Binding CreateGarageCommand}">
+                            <TextBlock TextWrapping="Wrap">Добавить гараж</TextBlock>
                         </Button>
                     
                         <Panel></Panel>
                         <ListBox Height="160" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                                 Background="gray" Items="{Binding ParkingItems}"
-                                 SelectedIndex="{Binding SelectedParkingIndex}"
+                                 Background="gray" Items="{Binding GarageItems}"
+                                 SelectedIndex="{Binding SelectedGarageIndex}"
                                  >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -76,20 +76,20 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <Button HorizontalAlignment="Center"
-                                Command="{Binding DeleteParkingCommand}" CommandParameter="{Binding SelectedParkingIndex}">
-                            <TextBlock TextWrapping="Wrap">Удалить парковку</TextBlock>
+                                Command="{Binding DeleteGarageCommand}" CommandParameter="{Binding SelectedGarageIndex}">
+                            <TextBlock TextWrapping="Wrap">Удалить гараж</TextBlock>
                         </Button>
                     </StackPanel>
                     
                     <Panel Height="50"></Panel>
                     <Button HorizontalAlignment="Center"
                             Command="{Binding CreateSimpleCommand}" 
-                            IsEnabled="{Binding IsParkingActive}" HotKey="Ctrl+N">
+                            IsEnabled="{Binding IsGarageActive}" HotKey="Ctrl+N">
                         <TextBlock TextWrapping="Wrap">Припарковать грузовик</TextBlock>
                     </Button>
                     <Button HorizontalAlignment="Center"
                             Command="{Binding CreateExtendedCommand}" 
-                            IsEnabled="{Binding IsParkingActive}" HotKey="Ctrl+M" >
+                            IsEnabled="{Binding IsGarageActive}" HotKey="Ctrl+M" >
                         <TextBlock TextWrapping="Wrap">Припарковать самосвал</TextBlock>
                     </Button>
                     
@@ -106,7 +106,7 @@
                                 
                                 <Button HorizontalAlignment="Center"
                                         Command="{Binding TakeObjectCommand}"
-                                        IsEnabled="{Binding IsParkingActive}">
+                                        IsEnabled="{Binding IsGarageActive}">
                                     <TextBlock TextWrapping="Wrap">Забрать</TextBlock>
                                 </Button>
                             </StackPanel>

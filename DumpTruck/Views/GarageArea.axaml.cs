@@ -19,7 +19,7 @@ public partial class GarageArea : UserControl
         Draw();
     }
 
-    public void SetParking(Garage<IVehicle>? garage)
+    public void SetGarage(Garage<IVehicle>? garage)
     {
         _garage = garage;
         
@@ -114,7 +114,7 @@ public partial class GarageArea : UserControl
         }
         else
         {
-            Helpers.MessageBox.Show("Парковка переполнена");
+            Helpers.MessageBox.Show("Гараж переполнен");
         }
     }
 
