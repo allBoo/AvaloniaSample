@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DumpTruck.Models;
 
-public class Parking<T> where T : class, IVehicle
+public class Garage<T> where T : class, IVehicle
 {
     /// <summary>
     /// Список объектов, которые храним
@@ -33,26 +33,26 @@ public class Parking<T> where T : class, IVehicle
     private readonly int _placeSizeHeight = 90;
 
     /// <summary>
-    /// Ширина парковки (кол-во паркомест)
+    /// Ширина гаража (кол-во паркомест)
     /// </summary>
     private int Width => _pictureWidth / _placeSizeWidth;
     
     /// <summary>
-    /// Высота парковки (кол-во паркомест)
+    /// Высота гаража (кол-во паркомест)
     /// </summary>
     private int Height => _pictureHeight / _placeSizeHeight;
     
     /// <summary>
-    /// Максимальное количество мест на парковке
+    /// Максимальное количество мест в гараже
     /// </summary>
     private int Capacity => Width * Height;
     
     /// <summary>
     /// Конструктор
     /// </summary>
-    /// <param name="picWidth">Рамзер парковки - ширина</param>
-    /// <param name="picHeight">Рамзер парковки - высота</param>
-    public Parking(int picWidth, int picHeight)
+    /// <param name="picWidth">Рамзер гаража - ширина</param>
+    /// <param name="picHeight">Рамзер гаража - высота</param>
+    public Garage(int picWidth, int picHeight)
     {
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
@@ -61,12 +61,12 @@ public class Parking<T> where T : class, IVehicle
     
     /// <summary>
     /// Перегрузка оператора сложения
-    /// Логика действия: на парковку добавляется автомобиль
+    /// Логика действия: в гараж добавляется автомобиль
     /// </summary>
-    /// <param name="p">Парковка</param>
+    /// <param name="p">гараж</param>
     /// <param name="car">Добавляемый автомобиль</param>
     /// <returns></returns>
-    public static bool operator +(Parking<T> p, T car)
+    public static bool operator +(Garage<T> p, T car)
     {
         if (p._places.Count < p.Capacity)
         {
@@ -79,12 +79,12 @@ public class Parking<T> where T : class, IVehicle
     
     /// <summary>
     /// Перегрузка оператора вычитания
-    /// Логика действия: с парковки забираем автомобиль
+    /// Логика действия: из гаража забираем автомобиль
     /// </summary>
-    /// <param name="p">Парковка</param>
+    /// <param name="p">гараж</param>
     /// <param name="index">Индекс места, с которого пытаемся извлечь объект</param>
     /// <returns></returns>
-    public static T? operator -(Parking<T> p, int index)
+    public static T? operator -(Garage<T> p, int index)
     {
         if (index >= 0 && index < p._places.Count)
         {
@@ -98,32 +98,32 @@ public class Parking<T> where T : class, IVehicle
     }
 
     /// <summary>
-    /// Изменение размеров парковки
+    /// Изменение размеров гаража
     /// </summary>
-    /// <param name="picWidth">Рамзер парковки - ширина</param>
-    /// <param name="picHeight">Рамзер парковки - высота</param>
+    /// <param name="picWidth">Рамзер гаража - ширина</param>
+    /// <param name="picHeight">Рамзер гаража - высота</param>
     public void Resize(int picWidth, int picHeight)
     {
         int oldCapacity = Capacity;
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
         
-        // expand or reduce parking
+        // expand or reduce garage
         if (Capacity != oldCapacity)
         {
-            Trace.WriteLine("Parking new Dimensions: Width = " + Width + " / Height = " + Height);
+            Trace.WriteLine("Garage new Dimensions: Width = " + Width + " / Height = " + Height);
 
-            // reduce parking
+            // reduce garage
             if (_places.Count > Capacity)
             {
-                Trace.WriteLine("Reduce Parking to the new Capacity " + Capacity);
+                Trace.WriteLine("Reduce Garage to the new Capacity " + Capacity);
                 _places.RemoveRange(Capacity, _places.Count - Capacity);
             }
         }
     }
     
     /// <summary>
-    /// Метод отрисовки парковки
+    /// Метод отрисовки гаража
     /// </summary>
     /// <param name="g"></param>
     public void Draw(DrawingContext g)

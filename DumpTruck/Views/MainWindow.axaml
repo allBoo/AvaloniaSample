@@ -8,7 +8,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
         x:Class="DumpTruck.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="DumpTruck Parking"
+        Title="DumpTruck Garage"
         
         MinHeight="300" MinWidth="400"
         TransparencyLevelHint="AcrylicBlur"
@@ -45,7 +45,7 @@
             <Panel>
                 <Panel Margin="0 0 180 0" 
                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <v:ParkingArea Margin="5" Name="ParkingArea"></v:ParkingArea>
+                    <v:GarageArea Margin="5" Name="GarageArea"></v:GarageArea>
                 </Panel>
                 <Separator BorderThickness="1,0,0,0" BorderBrush="gray"
                            VerticalAlignment="Stretch" HorizontalAlignment="Right"
@@ -55,17 +55,17 @@
                     <Panel></Panel>
                     
                     <StackPanel Spacing="10" Margin="10 0 10 0">
-                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Парковки:</TextBlock>
-                        <TextBox Text="{Binding NewParkingName}"></TextBox>
+                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Гаражи:</TextBlock>
+                        <TextBox Text="{Binding NewGarageName}"></TextBox>
                         <Button HorizontalAlignment="Center"
-                                Command="{Binding CreateParkingCommand}">
-                            <TextBlock TextWrapping="Wrap">Добавить парковку</TextBlock>
+                                Command="{Binding CreateGarageCommand}">
+                            <TextBlock TextWrapping="Wrap">Добавить гараж</TextBlock>
                         </Button>
                     
                         <Panel></Panel>
                         <ListBox Height="160" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                                 Background="gray" Items="{Binding ParkingItems}"
-                                 SelectedIndex="{Binding SelectedParkingIndex}"
+                                 Background="gray" Items="{Binding GarageItems}"
+                                 SelectedIndex="{Binding SelectedGarageIndex}"
                                  >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -76,15 +76,15 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <Button HorizontalAlignment="Center"
-                                Command="{Binding DeleteParkingCommand}" CommandParameter="{Binding SelectedParkingIndex}">
-                            <TextBlock TextWrapping="Wrap">Удалить парковку</TextBlock>
+                                Command="{Binding DeleteGarageCommand}" CommandParameter="{Binding SelectedGarageIndex}">
+                            <TextBlock TextWrapping="Wrap">Удалить гараж</TextBlock>
                         </Button>
                     </StackPanel>
                     
                     <Panel Height="50"></Panel>
                     <Button HorizontalAlignment="Center"
                             Command="{Binding AddVehicleCommand}" 
-                            IsEnabled="{Binding IsParkingActive}" HotKey="Ctrl+N">
+                            IsEnabled="{Binding IsGarageActive}" HotKey="Ctrl+N">
                         <TextBlock TextWrapping="Wrap">Добавить грузовик</TextBlock>
                     </Button>
 
@@ -96,12 +96,12 @@
                                 <WrapPanel Margin="0 10 0 0" HorizontalAlignment="Center" KeyUp="TakeCarOnKeyUp">
                                     <TextBlock TextWrapping="Wrap" VerticalAlignment="Center">Место:</TextBlock>
                                     <uc:NumericTextBox Margin="5 0 0 0" Width="30" 
-                                                       Text="{Binding ParkingPlace}"></uc:NumericTextBox>
+                                                       Text="{Binding GaragePlace}"></uc:NumericTextBox>
                                 </WrapPanel>
                                 
                                 <Button HorizontalAlignment="Center"
                                         Command="{Binding TakeObjectCommand}"
-                                        IsEnabled="{Binding IsParkingActive}">
+                                        IsEnabled="{Binding IsGarageActive}">
                                     <TextBlock TextWrapping="Wrap">Забрать</TextBlock>
                                 </Button>
                             </StackPanel>
