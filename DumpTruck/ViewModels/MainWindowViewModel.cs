@@ -117,7 +117,7 @@ namespace DumpTruck.ViewModels
         private void _addVehicle(IVehicle vehicle)
         {
             Trace.WriteLine("Got New Vehicle " + vehicle);
-            ParkingArea.AddToParking(vehicle);
+            GarageArea.AddToGarage(vehicle);
         }
 
         private void TakeFromGarage()
