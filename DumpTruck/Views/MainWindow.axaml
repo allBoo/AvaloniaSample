@@ -83,16 +83,11 @@
                     
                     <Panel Height="50"></Panel>
                     <Button HorizontalAlignment="Center"
-                            Command="{Binding CreateSimpleCommand}" 
+                            Command="{Binding AddVehicleCommand}" 
                             IsEnabled="{Binding IsParkingActive}" HotKey="Ctrl+N">
-                        <TextBlock TextWrapping="Wrap">Припарковать грузовик</TextBlock>
+                        <TextBlock TextWrapping="Wrap">Добавить грузовик</TextBlock>
                     </Button>
-                    <Button HorizontalAlignment="Center"
-                            Command="{Binding CreateExtendedCommand}" 
-                            IsEnabled="{Binding IsParkingActive}" HotKey="Ctrl+M" >
-                        <TextBlock TextWrapping="Wrap">Припарковать самосвал</TextBlock>
-                    </Button>
-                    
+
                     <Border BorderThickness="1" BorderBrush="gray" Margin="10 8 10 1">
                         <Panel>
                             <TextBlock TextWrapping="Wrap" FontSize="10" TextAlignment="Center" 

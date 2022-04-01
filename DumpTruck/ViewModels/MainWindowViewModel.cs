@@ -44,8 +44,7 @@ namespace DumpTruck.ViewModels
         public ObservableCollection<string> ParkingItems => new (_parkingCollection.Keys);
 
         public ICommand ExitCommand { get; }
-        public ICommand CreateSimpleCommand { get; }
-        public ICommand CreateExtendedCommand { get; }
+        public ICommand AddVehicleCommand { get; }
         public ICommand TakeObjectCommand { get; }
         public ICommand CreateParkingCommand { get; }
         public ICommand DeleteParkingCommand { get; }
@@ -60,8 +59,7 @@ namespace DumpTruck.ViewModels
             _parkingCollection = new ParkingCollection(0, 0);
             
             ExitCommand = ReactiveCommand.Create(Helpers.App.Exit);
-            CreateSimpleCommand = ReactiveCommand.Create(CreateNewSimpleModel);
-            CreateExtendedCommand = ReactiveCommand.Create(CreateNewExtendedModel);
+            AddVehicleCommand = ReactiveCommand.Create(AddVehicle);
             TakeObjectCommand = ReactiveCommand.Create(TakeFromParking);
             CreateParkingCommand = ReactiveCommand.Create(CreateNewParking);
             DeleteParkingCommand = ReactiveCommand.Create<int>(DeleteParking);
@@ -97,6 +95,29 @@ namespace DumpTruck.ViewModels
         private void CreateNewExtendedModel()
         {
             ParkingArea.AddTipTruck();
+        }
+
+        private async void AddVehicle()
+        {
+            // option 1. Use ShowDialog
+            /*
+            var configWindow = new CarConfigWindow();
+            var result = await configWindow.ShowDialog<IVehicle?>(Helpers.App.MainWindow());
+            if (result != null)
+            {
+                _addVehicle(result);
+            }
+            */
+            
+            // Option 2. Use Callback
+            var configWindow = new CarConfigWindow(_addVehicle);
+            configWindow.Show(Helpers.App.MainWindow());
+        }
+
+        private void _addVehicle(IVehicle vehicle)
+        {
+            Trace.WriteLine("Got New Vehicle " + vehicle);
+            ParkingArea.AddToParking(vehicle);
         }
 
         private void TakeFromParking()

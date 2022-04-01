@@ -101,7 +101,7 @@ public partial class ParkingArea : UserControl
         }
     }
 
-    private void AddToParking(IVehicle vehicle)
+    public void AddToParking(IVehicle vehicle)
     {
         if (_parking == null) return;
         

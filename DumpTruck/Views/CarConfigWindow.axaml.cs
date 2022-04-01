@@ -8,6 +8,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using DumpTruck.Controls;
+using DumpTruck.Models;
 using DumpTruck.ViewModels;
 
 namespace DumpTruck.Views;
@@ -16,13 +17,22 @@ public partial class CarConfigWindow : Window
 {
     private const string COLOR = "color";
     
+    private const bool WIDE_PALETTE = true;
+    
     private CarConfigWindowViewModel _vm;
-    public CarConfigWindow()
+
+    private readonly Action<IVehicle>? _callback;
+
+    private string? _receiver;
+    
+    public CarConfigWindow(Action<IVehicle>? callback = null)
     {
         InitializeComponent();
 #if DEBUG
         this.AttachDevTools();
 #endif
+        _callback = callback;
+
         var drawArea = this.Get<Drawable>("ModelDrawArea");
         
         _vm = new CarConfigWindowViewModel(drawArea);
@@ -31,17 +41,33 @@ public partial class CarConfigWindow : Window
         SetupDnd("SimpleModel", ModelSelected);
         SetupDnd("ExtendedModel", ModelSelected);
 
-        foreach (var elName in new []{"BodyColor", "TipperColor", "TentColor"})
+        if (WIDE_PALETTE)
         {
-            foreach (var i in Enumerable.Range(1, 4))
+            foreach (var i in Enumerable.Range(1, 12))
             {
-                SetupDnd(elName + i, ColorSelected,
+                SetupDnd("Color" + i, ColorSelected,
                     (data, el) => data.Set(COLOR, (el as Rectangle).Fill.ToString()));
+            }
+        }
+        else
+        {
+            foreach (var elName in new []{"BodyColor", "TipperColor", "TentColor"})
+            {
+                foreach (var i in Enumerable.Range(1, 4))
+                {
+                    SetupDnd(elName + i, ColorSelected,
+                        (data, el) => data.Set(COLOR, (el as Rectangle).Fill.ToString()));
+                }
             }
         }
         
         AddHandler(DragDrop.DropEvent, Drop);
         AddHandler(DragDrop.DragOverEvent, DragOver);
+    }
+
+    public CarConfigWindow()
+    {
+        // Used by the Designer
     }
 
     private void InitializeComponent()
@@ -57,12 +83,20 @@ public partial class CarConfigWindow : Window
         }
     }
     
+    private void AddClick(object? sender, RoutedEventArgs e)
+    {
+        var vehicle = _vm.GetVehicle();
+        if (_callback != null && vehicle != null)
+            _callback.Invoke(vehicle);
+        Close(vehicle);
+    }
+
     private void CancelClick(object? sender, RoutedEventArgs e)
     {
         Close();
     }
 
-    private void ModelSelected(DataObject dataObject)
+    private void ModelSelected(string? receiver, DataObject dataObject)
     {
         Trace.WriteLine("Selected Model " + dataObject.GetText());
         switch (dataObject.GetText())
@@ -77,36 +111,34 @@ public partial class CarConfigWindow : Window
         }
     }
     
-    private void ColorSelected(DataObject dataObject)
+    private void ColorSelected(string? receiver, DataObject dataObject)
     {
-        var part = dataObject.GetText();
         var color = dataObject.Get(COLOR) as string;
-        Trace.WriteLine("Selected Color " + part + " / " + color);
+        Trace.WriteLine("Selected Color " + receiver + " / " + color);
         
-        if (part == null || color == null) return;
+        if (receiver == null || color == null) return;
         
-        if (part.Contains("Body"))
+        if (receiver.Contains("Body"))
         {
-            Trace.WriteLine("Update Body Color " + color);
             _vm.BodyColor = color;
         }
-        else if (part.Contains("Tipper"))
+        else if (receiver.Contains("Tipper"))
         {
             _vm.TipperColor = color;
         }
-        else if (part.Contains("Tent"))
+        else if (receiver.Contains("Tent"))
         {
             _vm.TentColor = color;
         }
     }
     
-    private void SetupDnd(string controlName, Action<DataObject> callback, Action<DataObject, Control>? dataSetter = null)
+    private void SetupDnd(string controlName, Action<string?, DataObject> callback, Action<DataObject, Control>? dataSetter = null)
     {
         var control = this.Get<Control>(controlName);
         if (control == null) return;
 
         var data = new DataObject();
-        data.Set(DataFormats.Text, control.Name ?? "");
+        data.Set(DataFormats.Text, control.Tag as string ?? control.Name ?? "");
         dataSetter?.Invoke(data, control);
         
         async void DoDrag(object sender, PointerPressedEventArgs e)
@@ -116,7 +148,7 @@ public partial class CarConfigWindow : Window
             {
                 case DragDropEffects.Move:
                 case DragDropEffects.Copy:
-                    callback(data);
+                    callback(_receiver, data);
                     break;
             }
         }
@@ -137,12 +169,18 @@ public partial class CarConfigWindow : Window
     private void _validateDragDrop(object sender, DragEventArgs e)
     {
         e.DragEffects = DragDropEffects.None;
+        _receiver = null;
+        
         if (e.Source is Control c && e.Data.GetText() != null)
         {
-            var controlName = c.Name ?? c.Parent?.Name;
-            if (controlName != null && e.Data.GetText().Contains(controlName.Replace("Receiver", "")))
+            var receiverName = (c.Name ?? c.Parent?.Name)?.Replace("Receiver", "");
+            var senderName = e.Data.GetText();
+            
+            if (receiverName != null && senderName != null && 
+                (senderName.Contains(receiverName) || receiverName.Contains(senderName)))
             {
                 e.DragEffects = DragDropEffects.Move; // Copy has non-informational cursor
+                _receiver = receiverName;
             }
         }
     }

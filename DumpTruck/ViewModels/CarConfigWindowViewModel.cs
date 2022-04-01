@@ -32,6 +32,8 @@ public class CarConfigWindowViewModel : ViewModelBase
         }
     }
 
+    public bool HasVehicle => _vehicle != null;
+    
     public bool IsExtended => _vehicle is TipTruck;
 
     public bool HasTipper
@@ -96,9 +98,19 @@ public class CarConfigWindowViewModel : ViewModelBase
         _drawArea = drawArea;
     }
 
+    public CarConfigWindowViewModel()
+    {
+        // Used by the Designer
+    }
+
     private void Draw()
     {
         _drawArea.Draw();
+    }
+
+    public IVehicle? GetVehicle()
+    {
+        return _vehicle;
     }
 
     public void CreateSimpleVehicle()
@@ -117,6 +129,7 @@ public class CarConfigWindowViewModel : ViewModelBase
         _vehicle = vehicle;
         _drawArea.SetObject(_vehicle);
         
+        this.RaisePropertyChanged(nameof(HasVehicle));
         this.RaisePropertyChanged(nameof(IsExtended));
         this.RaisePropertyChanged(nameof(HasTipper));
         this.RaisePropertyChanged(nameof(HasTent));

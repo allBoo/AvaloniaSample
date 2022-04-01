@@ -37,12 +37,12 @@
                                Margin="5 -6" VerticalAlignment="Top" Background="gray">Тип кузова</TextBlock>
                     
                     <StackPanel >
-                        <Border BorderThickness="1" BorderBrush="gray" Margin="20 20 20 10" Name="SimpleModel">
+                        <Border BorderThickness="1" BorderBrush="gray" Margin="20 20 20 10" Name="SimpleModel" Background="#0000">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center" Name="SimpleModelText"
                                        Margin="10">Обычный грузовик</TextBlock>
                         </Border>
                         
-                        <Border BorderThickness="1" BorderBrush="gray" Margin="20" Name="ExtendedModel">
+                        <Border BorderThickness="1" BorderBrush="gray" Margin="20" Name="ExtendedModel" Background="#0000">
                             <TextBlock TextWrapping="Wrap" TextAlignment="Center" Name="ExtendedModelText"
                                        Margin="20">Самосвал</TextBlock>
                         </Border>
@@ -114,26 +114,26 @@
                                                Margin="10">Цвет тента</TextBlock>
                                 </Border>
                                 
-                                <Rectangle Grid.Row="1" Grid.Column="0" Width="50" Height="50" Name="BodyColor1" Fill="red" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="1" Grid.Column="1" Width="50" Height="50" Name="BodyColor2" Fill="yellow" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="2" Grid.Column="0" Width="50" Height="50" Name="BodyColor3" Fill="gray" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="2" Grid.Column="1" Width="50" Height="50" Name="BodyColor4" Fill="orange" Margin="5"></Rectangle>
-                                
-                                <Rectangle Grid.Row="1" Grid.Column="2" Width="50" Height="50" Name="TipperColor1" Fill="black" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="1" Grid.Column="3" Width="50" Height="50" Name="TipperColor2" Fill="white" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="2" Grid.Column="2" Width="50" Height="50" Name="TipperColor3" Fill="green" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="2" Grid.Column="3" Width="50" Height="50" Name="TipperColor4" Fill="blue" Margin="5"></Rectangle>
-                                
-                                <Rectangle Grid.Row="1" Grid.Column="4" Width="50" Height="50" Name="TentColor1" Fill="pink" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="1" Grid.Column="5" Width="50" Height="50" Name="TentColor2" Fill="lightblue" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="2" Grid.Column="4" Width="50" Height="50" Name="TentColor3" Fill="lightgray" Margin="5"></Rectangle>
-                                <Rectangle Grid.Row="2" Grid.Column="5" Width="50" Height="50" Name="TentColor4" Fill="lightgreen" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="1" Grid.Column="0" Width="50" Height="50" Tag="Color" Name="Color1" Fill="red" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="1" Grid.Column="1" Width="50" Height="50" Tag="Color" Name="Color2" Fill="yellow" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="0" Width="50" Height="50" Tag="Color" Name="Color3" Fill="gray" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="1" Width="50" Height="50" Tag="Color" Name="Color4" Fill="orange" Margin="5"></Rectangle>
+
+                                <Rectangle Grid.Row="1" Grid.Column="2" Width="50" Height="50" Tag="Color" Name="Color5" Fill="black" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="1" Grid.Column="3" Width="50" Height="50" Tag="Color" Name="Color6" Fill="white" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="2" Width="50" Height="50" Tag="Color" Name="Color7" Fill="green" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="3" Width="50" Height="50" Tag="Color" Name="Color8" Fill="blue" Margin="5"></Rectangle>
+
+                                <Rectangle Grid.Row="1" Grid.Column="4" Width="50" Height="50" Tag="Color" Name="Color9" Fill="pink" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="1" Grid.Column="5" Width="50" Height="50" Tag="Color" Name="Color10" Fill="lightblue" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="4" Width="50" Height="50" Tag="Color" Name="Color11" Fill="lightgray" Margin="5"></Rectangle>
+                                <Rectangle Grid.Row="2" Grid.Column="5" Width="50" Height="50" Tag="Color" Name="Color12" Fill="lightgreen" Margin="5"></Rectangle>
                             </Grid>
                         </Panel>
                     </Border>
 
                     <StackPanel Spacing="10" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" >
-                        <Button Width="100">
+                        <Button Width="100" Click="AddClick" IsEnabled="{Binding HasVehicle}">
                             <TextBlock TextAlignment="Center">Добавить</TextBlock>
                         </Button>
                         <Button Width="100" Click="CancelClick">
