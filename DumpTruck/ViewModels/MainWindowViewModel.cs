@@ -8,14 +8,14 @@ namespace DumpTruck.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private ParkingArea ParkingArea { get; }
+        private GarageArea GarageArea { get; }
         
-        private string? _parkingPlace;
+        private string? _garagePlace;
 
-        public string? ParkingPlace
+        public string? GaragePlace
         {
-            get => _parkingPlace;
-            set => this.RaiseAndSetIfChanged(ref _parkingPlace, value);
+            get => _garagePlace;
+            set => this.RaiseAndSetIfChanged(ref _garagePlace, value);
         }
         
         public ICommand ExitCommand { get; }
@@ -23,14 +23,14 @@ namespace DumpTruck.ViewModels
         public ICommand CreateExtendedCommand { get; }
         public ICommand TakeObjectCommand { get; }
         
-        public MainWindowViewModel(ParkingArea parkingArea)
+        public MainWindowViewModel(GarageArea garageArea)
         {
-            ParkingArea = parkingArea;
+            GarageArea = garageArea;
             
             ExitCommand = ReactiveCommand.Create(Helpers.App.Exit);
             CreateSimpleCommand = ReactiveCommand.Create(CreateNewSimpleModel);
             CreateExtendedCommand = ReactiveCommand.Create(CreateNewExtendedModel);
-            TakeObjectCommand = ReactiveCommand.Create(TakeFromParking);
+            TakeObjectCommand = ReactiveCommand.Create(TakeFromGarage);
         }
 
         public MainWindowViewModel()
@@ -40,21 +40,21 @@ namespace DumpTruck.ViewModels
 
         private void CreateNewSimpleModel()
         {
-            ParkingArea.AddDumpTruck();
+            GarageArea.AddDumpTruck();
         }
         
         private void CreateNewExtendedModel()
         {
-            ParkingArea.AddTipTruck();
+            GarageArea.AddTipTruck();
         }
 
-        private void TakeFromParking()
+        private void TakeFromGarage()
         {
-            if (!string.IsNullOrEmpty(ParkingPlace))
+            if (!string.IsNullOrEmpty(GaragePlace))
             {
-                var parkingPlaceIdx = Convert.ToInt32(ParkingPlace);
-                Trace.WriteLine("Take from place " + parkingPlaceIdx);
-                ParkingArea.TakeFromParking(parkingPlaceIdx);
+                var garagePlaceIdx = Convert.ToInt32(GaragePlace);
+                Trace.WriteLine("Take from place " + garagePlaceIdx);
+                GarageArea.TakeFromGarage(garagePlaceIdx);
             }
         }
     }

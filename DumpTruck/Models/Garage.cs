@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace DumpTruck.Models;
 
-public class Parking<T> where T : class, IDrawObject
+public class Garage<T> where T : class, IDrawObject
 {
     /// <summary>
     /// Массив объектов, которые храним
@@ -40,7 +40,7 @@ public class Parking<T> where T : class, IDrawObject
     /// </summary>
     /// <param name="picWidth">Рамзер парковки - ширина</param>
     /// <param name="picHeight">Рамзер парковки - высота</param>
-    public Parking(int picWidth, int picHeight)
+    public Garage(int picWidth, int picHeight)
     {
         _places = new T[Width * Height];
         _pictureWidth = picWidth;
@@ -54,7 +54,7 @@ public class Parking<T> where T : class, IDrawObject
     /// <param name="p">Парковка</param>
     /// <param name="car">Добавляемый автомобиль</param>
     /// <returns></returns>
-    public static bool operator +(Parking<T> p, T car)
+    public static bool operator +(Garage<T> p, T car)
     {
         for (int i = 0; i < p._places.Length; i++)
         {
@@ -75,7 +75,7 @@ public class Parking<T> where T : class, IDrawObject
     /// <param name="p">Парковка</param>
     /// <param name="index">Индекс места, с которого пытаемся извлечь объект</param>
     /// <returns></returns>
-    public static T? operator -(Parking<T> p, int index)
+    public static T? operator -(Garage<T> p, int index)
     {
         if (index >= 0 && index < p._places.Length && p._places[index] != null)
         {
@@ -97,20 +97,20 @@ public class Parking<T> where T : class, IDrawObject
     {
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
-        int newParkingSize = Width * Height;
+        int newGarageSize = Width * Height;
         
-        // expand or reduce parking
-        if (newParkingSize != _places.Length)
+        // expand or reduce garage
+        if (newGarageSize != _places.Length)
         {
-            Trace.WriteLine("Parking new Dimensions: Width = " + Width + " / Height = " + Height);
+            Trace.WriteLine("Garage new Dimensions: Width = " + Width + " / Height = " + Height);
 
-            T?[] newParking = new T[newParkingSize];
-            for (int i = 0; i < _places.Length && i < newParkingSize; i++)
+            T?[] newGarage = new T[newGarageSize];
+            for (int i = 0; i < _places.Length && i < newGarageSize; i++)
             {
-                newParking[i] = _places[i];
+                newGarage[i] = _places[i];
             }
 
-            _places = newParking;
+            _places = newGarage;
         }
     }
     

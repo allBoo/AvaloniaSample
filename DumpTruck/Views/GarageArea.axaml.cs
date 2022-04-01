@@ -9,17 +9,17 @@ using DumpTruck.Models;
     
 namespace DumpTruck.Views;
 
-public partial class ParkingArea : UserControl
+public partial class GarageArea : UserControl
 {
-    private readonly Parking<IDrawObject> _parking;
+    private readonly Garage<IDrawObject> _garage;
     
-    public ParkingArea()
+    public GarageArea()
     {
         InitializeComponent();
 
         var bounds = AreaBounds();
-        Trace.WriteLine("Initial parking bounds " + bounds);
-        _parking = new Parking<IDrawObject>((int)bounds.Width, (int)bounds.Height);
+        Trace.WriteLine("Initial garage bounds " + bounds);
+        _garage = new Garage<IDrawObject>((int)bounds.Width, (int)bounds.Height);
         Draw();
     }
     
@@ -30,12 +30,12 @@ public partial class ParkingArea : UserControl
     
     private Rect AreaBounds()
     {
-        var driveAreaBounds = this.FindControl<Panel>("ParkingAreaBounds");
+        var driveAreaBounds = this.FindControl<Panel>("GarageAreaBounds");
         return driveAreaBounds.Bounds;
     }
 
     // events
-    private void ParkingAreaBoundsChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    private void GarageAreaBoundsChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property.Name == "Bounds" && e.NewValue != null)
         {
@@ -50,14 +50,14 @@ public partial class ParkingArea : UserControl
     
     public void Resize(Rect newSize)
     {
-        Trace.WriteLine("Parking Area Size Changed " + newSize);
-        _parking.Resize((int)newSize.Width, (int)newSize.Height);
+        Trace.WriteLine("Garage Area Size Changed " + newSize);
+        _garage.Resize((int)newSize.Width, (int)newSize.Height);
         Draw();
     }
 
     public override void Render(DrawingContext context)
     {
-        _parking.Draw(context);
+        _garage.Draw(context);
     }
     
     // interface
@@ -69,7 +69,7 @@ public partial class ParkingArea : UserControl
         {
             Random rnd = new();
             var vehicle = new Models.DumpTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), (Color)color);
-            AddToParking(vehicle);
+            AddToGarage(vehicle);
         }
     }
     
@@ -87,19 +87,19 @@ public partial class ParkingArea : UserControl
                     Random rnd = new();
                     var vehicle = new Models.TipTruck(rnd.Next(100, 300), rnd.Next(1000, 2000), (Color)bodyColor, 
                         true, (Color)tipperColor, true, (Color)tentColor);
-                    AddToParking(vehicle);
+                    AddToGarage(vehicle);
                 }
             }
             
         }
     }
 
-    private void AddToParking(IDrawObject vehicle)
+    private void AddToGarage(IDrawObject vehicle)
     {
         Trace.WriteLine("Add '" + vehicle.GetType().Name + "' Car / Speed " + vehicle.Speed + 
                         " / Weight " + vehicle.Weight + " / Color " + vehicle.BodyColor);
 
-        if (_parking + vehicle)
+        if (_garage + vehicle)
         {
             Draw();
         }
@@ -109,9 +109,9 @@ public partial class ParkingArea : UserControl
         }
     }
 
-    public void TakeFromParking(int index)
+    public void TakeFromGarage(int index)
     {
-        var car = _parking - index;
+        var car = _garage - index;
         if (car != null)
         {
             // 
