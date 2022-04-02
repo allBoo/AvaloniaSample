@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DumpTruck.Models;
 
-public class GarageCollection
+public class GarageCollection : Serializable
 {
     /// <summary>
     /// Словарь (хранилище) с гаражами
@@ -53,7 +53,7 @@ public class GarageCollection
             return false;
         }
         
-        _garageStages[name] = new Garage<IVehicle>(_pictureWidth, _pictureHeight);
+        _garageStages[name] = new Garage<IVehicle>(name, _pictureWidth, _pictureHeight);
         return true;
     }
     
@@ -72,4 +72,11 @@ public class GarageCollection
     /// <param name="ind"></param>
     /// <returns></returns>
     public Garage<IVehicle> this[string ind] => _garageStages[ind];
+    
+    public override string DumpAttrs() => "";
+
+    public override List<ISerializable>? GetSerializableChildren()
+    {
+        return _garageStages.Values.Cast<ISerializable>().ToList();
+    }
 }

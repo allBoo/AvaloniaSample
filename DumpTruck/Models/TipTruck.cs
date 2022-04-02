@@ -78,4 +78,10 @@ public class TipTruck : DumpTruck
             g.DrawGeometry(tentBrush, pen, mline);
         }
     }
+
+    public override string DumpAttrs()
+    {
+        return $"{base.DumpAttrs()}{_separator}{Tipper}{_separator}{TipperColor}{_separator}" +
+               $"{Tent}{_separator}{TentColor}";
+    }
 }

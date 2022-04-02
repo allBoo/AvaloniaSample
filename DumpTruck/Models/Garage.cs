@@ -2,16 +2,24 @@ using Avalonia;
 using Avalonia.Media;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DumpTruck.Models;
 
-public class Garage<T> where T : class, IVehicle
+public class Garage<T> : Serializable where T : class, IVehicle
 {
     /// <summary>
     /// Список объектов, которые храним
     /// </summary>
     private readonly List<T> _places;
 
+    /// <summary>
+    /// название гаража
+    /// </summary>
+    private readonly string _name;
+    
+    private string _nameSafe => _name.Replace(":", "\ufe55");
+    
     /// <summary>
     /// Ширина окна отрисовки
     /// </summary>
@@ -50,10 +58,12 @@ public class Garage<T> where T : class, IVehicle
     /// <summary>
     /// Конструктор
     /// </summary>
-    /// <param name="picWidth">Рамзер гаража - ширина</param>
-    /// <param name="picHeight">Рамзер гаража - высота</param>
-    public Garage(int picWidth, int picHeight)
+    /// <param name="name">Название гаража</param>
+    /// <param name="picWidth">Размер гаража - ширина</param>
+    /// <param name="picHeight">Размер гаража - высота</param>
+    public Garage(string name, int picWidth, int picHeight)
     {
+        _name = name;
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
         _places = new List<T>(Capacity);
@@ -158,5 +168,14 @@ public class Garage<T> where T : class, IVehicle
             g.DrawLine(pen, new Point(i * _placeSizeWidth, 0), 
                 new Point(i * _placeSizeWidth, (_pictureHeight / _placeSizeHeight) * _placeSizeHeight));
         }
+    }
+    
+    public override string DumpName() => "Garage";
+    
+    public override string DumpAttrs() => $"{_nameSafe}";
+
+    public override List<ISerializable>? GetSerializableChildren()
+    {
+        return _places.Cast<ISerializable>().ToList();
     }
 }

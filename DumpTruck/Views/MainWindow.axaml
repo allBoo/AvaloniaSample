@@ -35,6 +35,11 @@
             <Panel VerticalAlignment="Top" Name="MenuPanel" DockPanel.Dock="Top">
                 <Menu Margin="10 0 0 0">
                     <MenuItem Header="_File">
+                        <MenuItem Header="_Open" Command="{Binding OpenFileCommand}" 
+                                  HotKey="Ctrl+O"/>
+                        <MenuItem Header="_Save" Command="{Binding SaveFileCommand}" 
+                                  HotKey="Ctrl+S"/>
+                        <Separator></Separator>
                         <MenuItem Header="_Exit" Command="{Binding ExitCommand}" 
                                   HotKey="Ctrl+Q"/>
                     </MenuItem>

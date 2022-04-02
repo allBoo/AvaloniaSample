@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Windows.Input;
+using Avalonia.Controls;
 using DumpTruck.Models;
 using DumpTruck.Views;
 using ReactiveUI;
@@ -44,6 +48,8 @@ namespace DumpTruck.ViewModels
         public ObservableCollection<string> GarageItems => new (_garageCollection.Keys);
 
         public ICommand ExitCommand { get; }
+        public ICommand OpenFileCommand { get; }
+        public ICommand SaveFileCommand { get; }
         public ICommand AddVehicleCommand { get; }
         public ICommand TakeObjectCommand { get; }
         public ICommand CreateGarageCommand { get; }
@@ -59,6 +65,9 @@ namespace DumpTruck.ViewModels
             _garageCollection = new GarageCollection(0, 0);
             
             ExitCommand = ReactiveCommand.Create(Helpers.App.Exit);
+            OpenFileCommand = ReactiveCommand.Create(OpenFile);
+            SaveFileCommand = ReactiveCommand.Create(SaveFile);
+            
             AddVehicleCommand = ReactiveCommand.Create(AddVehicle);
             TakeObjectCommand = ReactiveCommand.Create(TakeFromGarage);
             CreateGarageCommand = ReactiveCommand.Create(CreateNewGarage);
@@ -172,6 +181,45 @@ namespace DumpTruck.ViewModels
             {
                 Trace.WriteLine("Garage Unselected");
                 GarageArea.SetGarage(null);
+            }
+        }
+
+        private void OpenFile()
+        {
+        }
+
+        private async void SaveFile()
+        {
+            var dialog = new SaveFileDialog()
+            {
+                DefaultExtension = ".txt",
+                // Directory = Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                InitialFileName = "DumpTruck.txt",
+                Filters = new List<FileDialogFilter>
+                {
+                    new(){Name = "Text files (.txt)", Extensions = new List<string>{"txt"}}
+                },
+                Title = "Сохранить гараж"
+            };
+            var fileName = await dialog.ShowAsync(Helpers.App.MainWindow());
+            if (fileName == null) return;
+
+            if (System.IO.File.Exists(fileName) && 
+                !await Helpers.MessageBox.Confirm($"Перезаписать файл {fileName}?"))
+            {
+                return;
+            }
+
+            try
+            {
+                using (var file = new StreamWriter(fileName, false, new UTF8Encoding(true)))
+                {
+                    _garageCollection.DumpToFile(file);
+                }
+            }
+            catch (IOException e)
+            {
+                Helpers.MessageBox.ShowError($"Unable to save to file {fileName} with error {e}");
             }
         }
     }

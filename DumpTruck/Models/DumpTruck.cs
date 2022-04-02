@@ -9,7 +9,7 @@ using Point = Avalonia.Point;
 
 namespace DumpTruck.Models;
 
-public class DumpTruck : IVehicle
+public class DumpTruck : Serializable, IVehicle
 {
     /// <summary>
     /// Скорость
@@ -273,4 +273,6 @@ public class DumpTruck : IVehicle
     {
         return (_carWidth, _carHeight);
     }
+
+    public override string DumpAttrs() => $"{Speed}{_separator}{Weight}{_separator}{BodyColor}";
 }
