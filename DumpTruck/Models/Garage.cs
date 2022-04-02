@@ -174,8 +174,8 @@ public class Garage<T> : Serializable where T : class, IVehicle
     
     public override string DumpAttrs() => $"{_nameSafe}";
 
-    public override List<ISerializable>? GetSerializableChildren()
+    public override IEnumerable<ISerializable>? GetSerializableChildren()
     {
-        return _places.Cast<ISerializable>().ToList();
+        return _places.Cast<ISerializable>();
     }
 }

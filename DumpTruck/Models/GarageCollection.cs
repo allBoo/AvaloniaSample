@@ -75,8 +75,8 @@ public class GarageCollection : Serializable
     
     public override string DumpAttrs() => "";
 
-    public override List<ISerializable>? GetSerializableChildren()
+    public override IEnumerable<ISerializable>? GetSerializableChildren()
     {
-        return _garageStages.Values.Cast<ISerializable>().ToList();
+        return _garageStages.Values.Cast<ISerializable>();
     }
 }

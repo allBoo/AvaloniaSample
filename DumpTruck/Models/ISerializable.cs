@@ -20,7 +20,8 @@ public interface ISerializable
     /// Returns list of the serializable children
     /// </summary>
     /// <returns></returns>
-    public virtual List<ISerializable>? GetSerializableChildren() => null;
+    // public virtual List<ISerializable>? GetSerializableChildren() => null;
+    public virtual IEnumerable<ISerializable>? GetSerializableChildren() => null;
 
     public string DumpChildren();
     

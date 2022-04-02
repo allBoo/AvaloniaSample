@@ -31,12 +31,12 @@ public abstract class Serializable : ISerializable
     /// Returns list of the serializable children
     /// </summary>
     /// <returns></returns>
-    public virtual List<ISerializable>? GetSerializableChildren() => null;
+    public virtual IEnumerable<ISerializable>? GetSerializableChildren() => null;
 
     public virtual string DumpChildren()
     {
         var children = GetSerializableChildren();
-        return children != null ? string.Join("", children.ConvertAll(el => el.ToString())) : "";
+        return children != null ? string.Join("", children.ToList().ConvertAll(el => el.ToString())) : "";
     }
     
     public override string ToString()
