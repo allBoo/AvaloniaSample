@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ public class DumpTruck : Serializable, IVehicle
     /// <summary>
     /// Вес автомобиля
     /// </summary>
-    public float Weight { set; get; }
+    public int Weight { set; get; }
     
     /// <summary>
     /// Шаг объекта
@@ -72,11 +73,29 @@ public class DumpTruck : Serializable, IVehicle
     /// <param name="speed">Скорость</param>
     /// <param name="weight">Вес автомобиля</param>
     /// <param name="bodyColor">Цвет кузова</param>
-    public DumpTruck(int speed, float weight, Color bodyColor)
+    public DumpTruck(int speed, int weight, Color bodyColor)
     {
         Speed = speed;
         Weight = weight;
         BodyColor = bodyColor;
+    }
+
+    public DumpTruck(string[] serializedVars) 
+    {
+        if (serializedVars.Length < 3)
+        {
+            throw new UnserializeException("Unable to create DumpTruck. Wrong amount of vars");
+        }
+
+        Speed = Convert.ToInt32(serializedVars[0]);
+        Weight = Convert.ToInt32(serializedVars[1]);
+        BodyColor = Color.Parse(serializedVars[2]);
+    }
+    
+    public DumpTruck(string[] serializedVars, int carWidth, int carHeight) : this(serializedVars)
+    {
+        _carWidth = carWidth;
+        _carHeight = carHeight;
     }
     
     /// <summary>
@@ -87,7 +106,7 @@ public class DumpTruck : Serializable, IVehicle
     /// <param name="bodyColor">Цвет кузова</param>
     /// <param name="carWidth">Ширина объекта</param>
     /// <param name="carHeight">Высота объекта</param>
-    public DumpTruck(int speed, float weight, Color bodyColor,  int carWidth, int carHeight)
+    public DumpTruck(int speed, int weight, Color bodyColor,  int carWidth, int carHeight)
     {
         Speed = speed;
         Weight = weight;
@@ -274,5 +293,5 @@ public class DumpTruck : Serializable, IVehicle
         return (_carWidth, _carHeight);
     }
 
-    public override string DumpAttrs() => $"{Speed}{_separator}{Weight}{_separator}{BodyColor}";
+    public override string[] DumpAttrs() => new[]{Speed.ToString(), Weight.ToString(), BodyColor.ToString()};
 }

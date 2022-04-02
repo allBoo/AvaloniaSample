@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Media;
 using System.Diagnostics;
@@ -16,9 +17,9 @@ public class Garage<T> : Serializable where T : class, IVehicle
     /// <summary>
     /// название гаража
     /// </summary>
-    private readonly string _name;
+    public readonly string Name;
     
-    private string _nameSafe => _name.Replace(":", "\ufe55");
+    private string _nameSafe => Name.Replace(":", "\ufe55");
     
     /// <summary>
     /// Ширина окна отрисовки
@@ -63,10 +64,24 @@ public class Garage<T> : Serializable where T : class, IVehicle
     /// <param name="picHeight">Размер гаража - высота</param>
     public Garage(string name, int picWidth, int picHeight)
     {
-        _name = name;
+        Name = name;
         _pictureWidth = picWidth;
         _pictureHeight = picHeight;
         _places = new List<T>(Capacity);
+    }
+
+    public Garage(string[] serializedVars) : this("", 0, 0)
+    {
+        if (serializedVars.Length == 3)
+        {
+            Name = serializedVars[0];
+            _pictureWidth = Convert.ToInt32(serializedVars[1]);
+            _pictureHeight = Convert.ToInt32(serializedVars[2]);
+        }
+        else
+        {
+            throw new UnserializeException("Unable to create Garage. Wrong amount of vars");
+        }
     }
     
     /// <summary>
@@ -172,10 +187,25 @@ public class Garage<T> : Serializable where T : class, IVehicle
     
     public override string DumpName() => "Garage";
     
-    public override string DumpAttrs() => $"{_nameSafe}";
+    public override string[] DumpAttrs() => new []{_nameSafe, _pictureWidth.ToString(), _pictureHeight.ToString()};
 
-    public override IEnumerable<ISerializable>? GetSerializableChildren()
+    public override IEnumerable<ISerializable>? DumpChildren()
     {
         return _places.Cast<ISerializable>();
+    }
+    
+    public override void AddChild(string name, string[] attrs)
+    {
+        var fqn = $"DumpTruck.Models.{name}";
+        var ifqn = typeof(IVehicle).ToString();
+        
+        var t = Type.GetType(fqn);
+        if (t?.GetInterface(ifqn) != null)
+        {
+            if (Activator.CreateInstance(t, new object?[]{attrs}) is T vehicle)
+            {
+                _places.Add(vehicle);
+            }
+        }
     }
 }

@@ -1,3 +1,6 @@
+using System;
+using System.Diagnostics;
+using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
@@ -36,13 +39,26 @@ public class TipTruck : DumpTruck
     /// <param name="tipperColor">Цвет кузова</param>
     /// <param name="tent">Признак наличия тента</param>
     /// <param name="tentColor">Цвет кузова</param>
-    public TipTruck(int speed, float weight, Color bodyColor, bool tipper, Color tipperColor, bool tent, Color tentColor) :
+    public TipTruck(int speed, int weight, Color bodyColor, bool tipper, Color tipperColor, bool tent, Color tentColor) :
         base(speed, weight, bodyColor, 90, 70)
     {
         Tipper = tipper;
         TipperColor = tipperColor;
         Tent = tent;
         TentColor = tentColor;
+    }
+    
+    public TipTruck(string[] serializedVars) : base(serializedVars, 90, 70)
+    {
+        if (serializedVars.Length < 7)
+        {
+            throw new UnserializeException("Unable to create DumpTruck. Wrong amount of vars");
+        }
+        
+        Tipper = Convert.ToBoolean(serializedVars[3]);
+        TipperColor = Color.Parse(serializedVars[4]);
+        Tent = Convert.ToBoolean(serializedVars[5]);
+        TentColor = Color.Parse(serializedVars[6]);
     }
 
     /// <summary>
@@ -79,9 +95,11 @@ public class TipTruck : DumpTruck
         }
     }
 
-    public override string DumpAttrs()
+    public override string[] DumpAttrs()
     {
-        return $"{base.DumpAttrs()}{_separator}{Tipper}{_separator}{TipperColor}{_separator}" +
-               $"{Tent}{_separator}{TentColor}";
+        var baseAttrs = base.DumpAttrs();
+        var myAttrs = new string[] { Tipper.ToString(), TipperColor.ToString(), Tent.ToString(), TentColor.ToString()};
+
+        return baseAttrs.Concat(myAttrs).ToArray();
     }
 }

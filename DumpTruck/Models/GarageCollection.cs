@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace DumpTruck.Models;
@@ -29,6 +31,8 @@ public class GarageCollection : Serializable
     /// Amount of Garages
     /// </summary>
     public int Count => _garageStages.Count;
+
+    private readonly string _childName;
     
     /// <summary>
     /// Конструктор
@@ -40,6 +44,22 @@ public class GarageCollection : Serializable
         _garageStages = new Dictionary<string, Garage<IVehicle>>();
         _pictureWidth = pictureWidth;
         _pictureHeight = pictureHeight;
+
+        _childName = new Garage<IVehicle>(new[]{"", "0", "0"}).DumpName();
+    }
+
+    // used by the Serializer
+    public GarageCollection(string[] serializedVars) : this(0, 0)
+    {
+        if (serializedVars.Length == 2)
+        {
+            _pictureWidth = Convert.ToInt32(serializedVars[0]);
+            _pictureHeight = Convert.ToInt32(serializedVars[1]);
+        }
+        else
+        {
+            throw new UnserializeException("Unable to create GarageCollection. Wrong amount of vars");
+        }
     }
     
     /// <summary>
@@ -54,6 +74,20 @@ public class GarageCollection : Serializable
         }
         
         _garageStages[name] = new Garage<IVehicle>(name, _pictureWidth, _pictureHeight);
+        _lastAddedGarage = name;
+        
+        return true;
+    }
+    
+    /// <summary>
+    /// Добавление гаража
+    /// </summary>
+    /// <param name="garage"></param>
+    /// <returns></returns>
+    public bool AddGarage(Garage<IVehicle> garage)
+    {
+        _garageStages[garage.Name] = garage;
+        _lastAddedGarage = garage.Name;
         return true;
     }
     
@@ -73,10 +107,25 @@ public class GarageCollection : Serializable
     /// <returns></returns>
     public Garage<IVehicle> this[string ind] => _garageStages[ind];
     
-    public override string DumpAttrs() => "";
-
-    public override IEnumerable<ISerializable>? GetSerializableChildren()
+    public override string[] DumpAttrs() => new []{_pictureWidth.ToString(), _pictureHeight.ToString()};
+    
+    public override IEnumerable<ISerializable>? DumpChildren()
     {
         return _garageStages.Values.Cast<ISerializable>();
+    }
+
+    private string? _lastAddedGarage;
+    
+    public override void AddChild(string name, string[] attrs)
+    {
+        if (name == _childName)
+        {
+            AddGarage(new Garage<IVehicle>(attrs));
+        }
+        else if (_lastAddedGarage != null)
+        {
+            var lastGarage = this[_lastAddedGarage];
+            lastGarage.AddChild(name, attrs);
+        }
     }
 }

@@ -12,7 +12,7 @@ public interface IVehicle : IDrawable, ISerializable
     /// <summary>
     /// Вес автомобиля
     /// </summary>
-    public float Weight { set; get; }
+    public int Weight { set; get; }
 
     /// <summary>
     /// Шаг объекта

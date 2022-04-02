@@ -14,18 +14,32 @@ public interface ISerializable
     /// Serialize attrs into string
     /// </summary>
     /// <returns></returns>
-    public string DumpAttrs();
+    public string[] DumpAttrs();
 
     /// <summary>
     /// Returns list of the serializable children
     /// </summary>
     /// <returns></returns>
-    // public virtual List<ISerializable>? GetSerializableChildren() => null;
-    public virtual IEnumerable<ISerializable>? GetSerializableChildren() => null;
+    public virtual IEnumerable<ISerializable>? DumpChildren() => null;
 
-    public string DumpChildren();
+    /// <summary>
+    /// Adds new child from serialized string
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="attrs"></param>
+    public void AddChild(string name, string[] attrs);
     
+    /// <summary>
+    /// Dumps object representation into string
+    /// </summary>
+    /// <returns></returns>
     public string ToString();
 
+    /// <summary>
+    /// Dumps object representation into file
+    /// </summary>
+    /// <param name="file"></param>
     public void DumpToFile(System.IO.StreamWriter file);
+
+    // public void LoadFromFile(System.IO.StreamWriter file);
 }

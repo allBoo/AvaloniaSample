@@ -14,7 +14,7 @@ namespace DumpTruck.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private readonly GarageCollection _garageCollection;
+        private GarageCollection _garageCollection;
         private GarageArea GarageArea { get; }
         
         private string? _garagePlace;
@@ -184,8 +184,49 @@ namespace DumpTruck.ViewModels
             }
         }
 
-        private void OpenFile()
+        private async void OpenFile()
         {
+            var dialog = new OpenFileDialog()
+            {
+                AllowMultiple = false,
+                Directory = Environment.GetFolderPath(Environment.SpecialFolder.Personal) + "/tmp/",
+                InitialFileName = "DumpTruck.txt",
+                Filters = new List<FileDialogFilter>
+                {
+                    new(){Name = "Text files (.txt)", Extensions = new List<string>{"txt"}}
+                },
+                Title = "Открыть гараж"
+            };
+            var fileName = await dialog.ShowAsync(Helpers.App.MainWindow());
+            if (fileName == null) return;
+
+            try
+            {
+                using (var file = new StreamReader(fileName[0]))
+                {
+                    if (Serializable.LoadFromFile<GarageCollection>(file, _garageCollection.DumpName()) is
+                        GarageCollection collection)
+                    {
+
+                        _garageCollection = collection;
+                        ReloadLevels();
+
+                        Helpers.MessageBox.ShowError("Гараж успешно загружен");
+                    }
+                    else
+                    {
+                        Helpers.MessageBox.ShowError("Не получилось загрузить гараж, возможно файл пуст");
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                Helpers.MessageBox.ShowError($"Не получилось прочитать файл {fileName}. Ошибка: {e.Message}");
+            }
+            catch (Serializable.UnserializeException e)
+            {
+                Helpers.MessageBox.ShowError($"Не получилось загрузить гараж. Ошибка {e.Message}");
+            }
         }
 
         private async void SaveFile()
