@@ -97,6 +97,11 @@ public class GarageCollection : Serializable
     /// <param name="name">Название гаража</param>
     public bool DelGarage(string name)
     {
+        if (!_garageStages.ContainsKey(name))
+        {
+            throw new KeyNotFoundException();
+        }
+        
         return _garageStages.ContainsKey(name) && _garageStages.Remove(name);
     }
     

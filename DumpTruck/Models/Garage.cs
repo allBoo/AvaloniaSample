@@ -101,7 +101,7 @@ public class Garage<T> : Serializable where T : class, IVehicle
             return true;
         }
 
-        return false;
+        throw new OverflowException("В гараже нет свободных мест");
     }
     
     /// <summary>
@@ -111,7 +111,7 @@ public class Garage<T> : Serializable where T : class, IVehicle
     /// <param name="p">гараж</param>
     /// <param name="index">Индекс места, с которого пытаемся извлечь объект</param>
     /// <returns></returns>
-    public static T? operator -(Garage<T> p, int index)
+    public static T operator -(Garage<T> p, int index)
     {
         if (index >= 0 && index < p._places.Count)
         {
@@ -121,7 +121,7 @@ public class Garage<T> : Serializable where T : class, IVehicle
             return taken;
         }
 
-        return null;
+        throw new IndexOutOfRangeException("Не найден автомобиль по месту " + index);
     }
 
     /// <summary>

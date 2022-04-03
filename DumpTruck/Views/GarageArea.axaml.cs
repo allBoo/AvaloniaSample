@@ -108,31 +108,30 @@ public partial class GarageArea : UserControl
         Trace.WriteLine("Add '" + vehicle.GetType().Name + "' Car / Speed " + vehicle.Speed + 
                         " / Weight " + vehicle.Weight + " / Color " + vehicle.BodyColor);
 
-        if (_garage + vehicle)
+        try
         {
-            Draw();
+            _ = _garage + vehicle;
         }
-        else
+        catch (OverflowException e)
         {
-            Helpers.MessageBox.Show("Гараж переполнен");
+            Helpers.MessageBox.ShowError(e.Message);
         }
     }
 
     public void TakeFromGarage(int index)
     {
         if (_garage == null) return;
-        
-        var car = _garage - index;
-        if (car != null)
+
+        try
         {
-            // 
+            var car = _garage - index;
             var driveWindow = new DriveWindow(car);
             Helpers.App.ShowDialog(driveWindow);
             Draw();
         }
-        else
+        catch (IndexOutOfRangeException e) 
         {
-            Helpers.MessageBox.Show("Парковочное место пусто");
+            Helpers.MessageBox.ShowError(e.Message);            
         }
     }
 }

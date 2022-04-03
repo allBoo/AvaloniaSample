@@ -158,13 +158,14 @@ namespace DumpTruck.ViewModels
             if (index > -1 && await Helpers.MessageBox.Confirm("Удалить гараж?"))
             {
                 Trace.WriteLine("Delete Garage " + index + " / " + GarageItems[index]);
-                if (_garageCollection.DelGarage(GarageItems[index]))
+                try
                 {
+                    _garageCollection.DelGarage(GarageItems[index]);
                     ReloadLevels();
                 }
-                else
+                catch (KeyNotFoundException e)
                 {
-                    Helpers.MessageBox.ShowError("Нет такого гаража");
+                    Helpers.MessageBox.ShowError(e.Message);
                 }
             }
         }
@@ -203,6 +204,11 @@ namespace DumpTruck.ViewModels
 
             try
             {
+                if (!File.Exists(fileName[0]))
+                {
+                    throw new FileNotFoundException();
+                }
+
                 using (var file = new StreamReader(fileName[0]))
                 {
                     if (Serializable.LoadFromFile<GarageCollection>(file, _garageCollection.DumpName()) is
@@ -216,7 +222,8 @@ namespace DumpTruck.ViewModels
                     }
                     else
                     {
-                        Helpers.MessageBox.ShowError("Не получилось загрузить гараж, файл пуст или имеет неверный формат");
+                        Helpers.MessageBox.ShowError(
+                            "Не получилось загрузить гараж, файл пуст или имеет неверный формат");
                     }
                 }
             }
@@ -227,6 +234,10 @@ namespace DumpTruck.ViewModels
             catch (Serializable.UnserializeException e)
             {
                 Helpers.MessageBox.ShowError($"Не получилось загрузить гараж. Ошибка {e.Message}");
+            }
+            catch (Exception e)
+            {
+                Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
             }
         }
 
@@ -263,6 +274,10 @@ namespace DumpTruck.ViewModels
             catch (IOException e)
             {
                 Helpers.MessageBox.ShowError($"Не получилось сохранить данные в файл {fileName}. Ошибка {e.Message}");
+            }
+            catch (Exception e)
+            {
+                Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
             }
         }
     }
