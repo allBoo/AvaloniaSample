@@ -21,8 +21,6 @@ public class Garage<T> : Serializable where T : class, IVehicle
     /// </summary>
     public readonly string Name;
     
-    private string _nameSafe => Name.Replace(":", "\ufe55");
-    
     /// <summary>
     /// Ширина окна отрисовки
     /// </summary>
@@ -99,6 +97,15 @@ public class Garage<T> : Serializable where T : class, IVehicle
     {
         if (p._places.Count < p.Capacity)
         {
+            var c = new TruckComparator();
+            foreach (var existsCar in p._places)
+            {
+                if (c.Compare(existsCar, car) == 0)
+                {
+                    throw new ArgumentException("В гараже уже есть такая машина");
+                }
+            }
+            
             p._places.Add(car);
             return true;
         }
@@ -125,6 +132,11 @@ public class Garage<T> : Serializable where T : class, IVehicle
 
         throw new IndexOutOfRangeException("Не найден автомобиль по месту " + index);
     }
+    
+    /// <summary>
+    /// Сортировка автомобилей на парковке
+    /// </summary>
+    public void Sort() => _places.Sort((IComparer<T>)new TruckComparator());
 
     /// <summary>
     /// Изменение размеров гаража
@@ -191,7 +203,7 @@ public class Garage<T> : Serializable where T : class, IVehicle
     
     public override string DumpName() => "Garage";
     
-    public override object[] DumpAttrs() => new object[]{_nameSafe, _pictureWidth, _pictureHeight};
+    public override object[] DumpAttrs() => new object[]{Name, _pictureWidth, _pictureHeight};
 
     public override IEnumerable<ISerializable>? DumpChildren()
     {

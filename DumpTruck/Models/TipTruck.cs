@@ -1,14 +1,16 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
+using NLog;
 
 namespace DumpTruck.Models;
 
-public class TipTruck : DumpTruck
+public class TipTruck : DumpTruck, IEquatable<TipTruck>, IComparable<TipTruck>
 {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    
     /// <summary>
     /// Признак наличия кузова
     /// </summary>
@@ -94,7 +96,57 @@ public class TipTruck : DumpTruck
             g.DrawGeometry(tentBrush, pen, mline);
         }
     }
+    
+    /// <summary>
+    /// Метод интерфейса IEquatable для класса Car
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public bool Equals(TipTruck? other)
+    {
+        return base.Equals(other) && Tipper == other.Tipper && TipperColor == other.TipperColor 
+               && Tent == other.Tent && TentColor == other.TentColor;
+    }
+    
+    /// <summary>
+    /// Метод интерфейса IComparable
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public int CompareTo(TipTruck? other)
+    {
+        if (other == null)
+        {
+            return 1;
+        }
+        
+        if (this == other) return 0;
 
+        var res = base.CompareTo(other);
+        if (res == 0)
+        {
+            res = Tipper.CompareTo(other.Tipper);
+        }
+        if (res == 0)
+        {
+            res = TipperColor.ToUint32().CompareTo(other.TipperColor.ToUint32());
+        }
+        if (res == 0)
+        {
+            res = Tent.CompareTo(other.Tent);
+        }
+        if (res == 0)
+        {
+            res = TentColor.ToUint32().CompareTo(other.TentColor.ToUint32());
+        }
+
+        return res;
+    }
+
+    /// <summary>
+    /// Serialize attrs into string
+    /// </summary>
+    /// <returns></returns>
     public override object[] DumpAttrs()
     {
         var baseAttrs = base.DumpAttrs();

@@ -105,16 +105,23 @@ public partial class GarageArea : UserControl
     public void AddToGarage(IVehicle vehicle)
     {
         if (_garage == null) return;
-        
+
         try
         {
             _ = _garage + vehicle;
+            Draw();
+
             logger.Info($"New car {vehicle} has added to the garage {_garage.Name}");
         }
         catch (OverflowException e)
         {
             logger.Warn($"Unable to add car to the garage {_garage.Name} with error {e.Message}");
-            Helpers.MessageBox.ShowError(e.Message);
+            Helpers.MessageBox.ShowError(e.Message, "Переполнение");
+        }
+        catch (ArgumentException e)
+        {
+            logger.Warn($"Unable to add car to the garage {_garage.Name} with error {e.Message}");
+            Helpers.MessageBox.ShowError(e.Message, "Дубликат");
         }
     }
 

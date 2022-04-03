@@ -1,17 +1,18 @@
 using System;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
-using System.Diagnostics;
 using Avalonia;
 using Brushes = Avalonia.Media.Brushes;
 using Pen = Avalonia.Media.Pen;
 using Point = Avalonia.Point;
-
+using NLog;
 
 namespace DumpTruck.Models;
 
-public class DumpTruck : Serializable, IVehicle
+public class DumpTruck : Serializable, IVehicle, IEquatable<DumpTruck>, IComparable<DumpTruck>
 {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    
     /// <summary>
     /// Скорость
     /// </summary>
@@ -270,28 +271,88 @@ public class DumpTruck : Serializable, IVehicle
         g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - 5, cabinTop + 2, 3, cabinHeight - 10));
         g.FillRectangle(brBlue, new Rect(_startPosX.Value + _carWidth - cabinWidth + 5, cabinTop + 5, 13, cabinHeight - 15));
     }
-
+    
+    /// <summary>
+    /// Изменение направления пермещения объекта
+    /// </summary>
+    /// <param name="direction">Направление</param>
+    /// <returns></returns>
     public bool MoveObject(Direction direction)
     {
         MoveTransport(direction);
         return _makeStep;
     }
     
+    /// <summary>
+    /// Отрисовка объекта
+    /// </summary>
+    /// <param name="g"></param>
     public void DrawObject(DrawingContext g)
     {
         DrawTransport(g);
     }
     
+    /// <summary>
+    /// Получение текущей позиции объекта
+    /// </summary>
+    /// <returns></returns>
     public (float Left, float Right, float Top, float Bottom) GetCurrentPosition()
     {
         return (_startPosX.Value, _startPosX.Value + _carWidth,
             _startPosY.Value, _startPosY.Value + _carHeight);
     }
 
+    /// <summary>
+    /// Получение размеров объекта
+    /// </summary>
+    /// <returns></returns>
     public (int Width, int Height) GetDimensions()
     {
         return (_carWidth, _carHeight);
     }
+    
+    /// <summary>
+    /// Метод интерфейса IEquatable
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public bool Equals(DumpTruck? other)
+    {
+        return other != null && other.GetType() == GetType() && 
+               Speed == other.Speed && Weight == other.Weight && BodyColor == other.BodyColor;
+    }
 
+    /// <summary>
+    /// Метод интерфейса IComparable
+    /// </summary>
+    /// <param name="other"></param>
+    /// <returns></returns>
+    public int CompareTo(DumpTruck? other)
+    {
+        if (other == null)
+        {
+            return 1;
+        }
+        
+        if (this == other) return 0;
+        
+        var res = Weight.CompareTo(other.Weight);
+        if (res == 0)
+        {
+            res = Speed.CompareTo(other.Speed);
+        }
+        if (res == 0)
+        {
+            res = BodyColor.ToUint32().CompareTo(other.BodyColor.ToUint32());
+        }
+
+        return res;
+
+    }
+
+    /// <summary>
+    /// Serialize attrs into string
+    /// </summary>
+    /// <returns></returns>
     public override object[] DumpAttrs() => new object[]{Speed, Weight, BodyColor};
 }

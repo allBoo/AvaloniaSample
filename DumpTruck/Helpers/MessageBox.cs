@@ -22,12 +22,12 @@ public static class MessageBox
         messageBoxStandardWindow.ShowDialog(App.MainWindow());
     }
     
-    public static void ShowError(string message)
+    public static void ShowError(string message, string? title = null)
     {
         var messageBoxStandardWindow = MessageBoxManager.GetMessageBoxStandardWindow(new MessageBoxStandardParams
         {
             ButtonDefinitions = ButtonEnum.Ok,
-            ContentTitle = "Error",
+            ContentTitle = title ?? "Error",
             ContentMessage = message + "   ",
             FontFamily = "Microsoft Sans Serif",
             Icon = Icon.Error
