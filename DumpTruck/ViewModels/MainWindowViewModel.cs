@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using Avalonia.Controls;
@@ -39,17 +40,31 @@ namespace DumpTruck.ViewModels
         public int? SelectedGarageIndex
         {
             get => _selectedGarageIndex;
+            set => this.RaiseAndSetIfChanged(ref _selectedGarageIndex, value);
+        }
+
+        private string? _selectedItem;
+        public string? SelectedItem
+        {
+            get => _selectedItem;
             set
             {
-                this.RaiseAndSetIfChanged(ref _selectedGarageIndex, value);
+                this.RaiseAndSetIfChanged(ref _selectedItem, value);
                 GarageChangedCommand.Execute(value);
                 this.RaisePropertyChanged(nameof(IsGarageActive));
             }
         }
-        
+
         public bool? IsGarageActive => SelectedGarageIndex > -1;
 
-        public ObservableCollection<string> GarageItems => new (_garageCollection.Keys);
+        public ObservableCollection<string> GarageItems
+        {
+            get
+            {
+                _garageCollection.Reset();
+                return new ObservableCollection<string>(_garageCollection);
+            }
+        }
 
         public ICommand ExitCommand { get; }
         public ICommand OpenFileCommand { get; }
@@ -77,8 +92,8 @@ namespace DumpTruck.ViewModels
             TakeObjectCommand = ReactiveCommand.Create(TakeFromGarage);
             CreateGarageCommand = ReactiveCommand.Create(CreateNewGarage);
             SortCommand = ReactiveCommand.Create(SortCars);
-            DeleteGarageCommand = ReactiveCommand.Create<int>(DeleteGarage);
-            GarageChangedCommand = ReactiveCommand.Create<int>(GarageChanged);
+            DeleteGarageCommand = ReactiveCommand.Create<string>(DeleteGarage);
+            GarageChangedCommand = ReactiveCommand.Create<string>(GarageChanged);
         }
 
         public MainWindowViewModel()
@@ -163,21 +178,21 @@ namespace DumpTruck.ViewModels
 
         private void SortCars()
         {
-            if (SelectedGarageIndex > -1)
+            if (SelectedGarageIndex > -1 && SelectedItem != null)
             {
-                _garageCollection[GarageItems[(int)SelectedGarageIndex]].Sort();
+                _garageCollection[SelectedItem].Sort();
                 GarageArea.Draw();
             }
         }
         
-        private async void DeleteGarage(int index)
+        private async void DeleteGarage(string? selectedItem)
         {
-            if (index > -1 && await Helpers.MessageBox.Confirm("Удалить гараж?"))
+            if (selectedItem != null && await Helpers.MessageBox.Confirm($"Удалить гараж '{selectedItem}'?"))
             {
                 try
                 {
-                    logger.Debug("Delete Garage " + index + " / " + GarageItems[index]);
-                    _garageCollection.DelGarage(GarageItems[index]);
+                    logger.Debug($"Delete Garage {selectedItem}");
+                    _garageCollection.DelGarage(selectedItem);
                     ReloadLevels();
                 }
                 catch (Exception e)
@@ -188,14 +203,14 @@ namespace DumpTruck.ViewModels
             }
         }
 
-        private void GarageChanged(int index)
+        private void GarageChanged(string? selectedItem)
         {
             if (_lockChanges) return;
             
-            if (index > -1)
+            if (selectedItem != null)
             {
-                logger.Info("Garage Changed to " + index + " / " + GarageItems[index]);
-                GarageArea.SetGarage(_garageCollection[GarageItems[index]]);
+                logger.Info($"Garage Changed to {SelectedItem}");
+                GarageArea.SetGarage(_garageCollection[selectedItem]);
             }
             else
             {
@@ -250,6 +265,14 @@ namespace DumpTruck.ViewModels
             {
                 logger.Warn("Load file unknown error: " + e.Message);
                 Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
+            }
+            
+            logger.Warn($"KEYS {_garageCollection.Count} / " + string.Join(",", _garageCollection.ToList()));
+            // _garageCollection.Reset();
+            foreach (var kk in _garageCollection)
+            {
+                // 
+                logger.Warn($"K {kk}");
             }
         }
 

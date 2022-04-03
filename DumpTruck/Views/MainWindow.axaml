@@ -71,7 +71,8 @@
                         <ListBox Height="160" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                                  Background="gray" Items="{Binding GarageItems}"
                                  SelectedIndex="{Binding SelectedGarageIndex}"
-                                 >
+                                 SelectedItem="{Binding SelectedItem}"
+                        >
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Border CornerRadius="5" Padding="1">
@@ -81,7 +82,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <Button HorizontalAlignment="Center"
-                                Command="{Binding DeleteGarageCommand}" CommandParameter="{Binding SelectedGarageIndex}">
+                                Command="{Binding DeleteGarageCommand}" CommandParameter="{Binding SelectedItem}">
                             <TextBlock TextWrapping="Wrap">Удалить гараж</TextBlock>
                         </Button>
                     </StackPanel>

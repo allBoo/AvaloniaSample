@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
 namespace DumpTruck.Models;
 
-public class GarageCollection : Serializable
+public class GarageCollection : Serializable, IEnumerator<string>, IEnumerable<string>
 {
     /// <summary>
     /// Словарь (хранилище) с гаражами
@@ -15,7 +16,36 @@ public class GarageCollection : Serializable
     /// <summary>
     /// Возвращение списка названий гаражей
     /// </summary>
-    public List<string> Keys => _garageStages.Keys.ToList();
+    private List<string> _keys => _garageStages.Keys.ToList();
+    
+    /// <summary>
+    /// Текущий элемент для вывода через IEnumerator (будет обращаться по
+    /// своему индексу к ключу словаря, по которму будет возвращаться запись)
+    /// </summary>
+    private int _currentIndex = -1;
+    
+    /// <summary>
+    /// Возвращение текущего элемента для IEnumerator
+    /// </summary>
+    public string Current {
+        get
+        {
+            try
+            {
+                return _keys[_currentIndex];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                _currentIndex = -1;
+                throw new InvalidOperationException();
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Возвращение текущего элемента для IEnumerator
+    /// </summary>
+    object IEnumerator.Current => Current;
     
     /// <summary>
     /// Ширина окна отрисовки
@@ -30,7 +60,7 @@ public class GarageCollection : Serializable
     /// <summary>
     /// Amount of Garages
     /// </summary>
-    public int Count => _garageStages.Count;
+    public int Count => _keys.Count;
 
     private readonly string _childName;
     
@@ -133,4 +163,38 @@ public class GarageCollection : Serializable
             lastGarage.AddChild(name, attrs);
         }
     }
+    
+    /// <summary>
+    /// Метод от IDisposable (унаследован в IEnumerator). В данном случае, логики в нем не требуется
+    /// </summary>
+    public void Dispose() { }
+    
+    /// <summary>
+    /// Переход к следующему элементу
+    /// </summary>
+    /// <returns></returns>
+    public bool MoveNext()
+    {
+        _currentIndex++;
+        return (_currentIndex < _keys.Count);
+    }
+    
+    /// <summary>
+    /// Сброс при достижении конца
+    /// </summary>
+    public void Reset() => _currentIndex = -1;
+    
+    /// <summary>
+    /// Получение ссылки на объект от класса, реализующего IEnumerator
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator<string> GetEnumerator() => this;
+    
+    /// <summary>
+    /// Получение ссылки на объект от класса, реализующего IEnumerator
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator IEnumerable.GetEnumerator() => this;
+    
+    
 }
