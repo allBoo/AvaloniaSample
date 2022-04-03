@@ -9,14 +9,15 @@ public static class MessageBox
 {
     private const string DefaultTitle = "DumpTruck";
 
-    public static void Show(string message)
+    public static void Show(string message, Icon? icon = null)
     {
         var messageBoxStandardWindow = MessageBoxManager.GetMessageBoxStandardWindow(new MessageBoxStandardParams
         {
             ButtonDefinitions = ButtonEnum.Ok,
             ContentTitle = DefaultTitle,
             ContentMessage = message + "   ",
-            FontFamily = "Microsoft Sans Serif"
+            FontFamily = "Microsoft Sans Serif",
+            Icon = icon ?? Icon.None
         });
         messageBoxStandardWindow.ShowDialog(App.MainWindow());
     }

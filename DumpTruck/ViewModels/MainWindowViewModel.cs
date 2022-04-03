@@ -8,6 +8,7 @@ using System.Windows.Input;
 using Avalonia.Controls;
 using DumpTruck.Models;
 using DumpTruck.Views;
+using MessageBox.Avalonia.Enums;
 using ReactiveUI;
 
 namespace DumpTruck.ViewModels
@@ -211,11 +212,11 @@ namespace DumpTruck.ViewModels
                         _garageCollection = collection;
                         ReloadLevels();
 
-                        Helpers.MessageBox.ShowError("Гараж успешно загружен");
+                        Helpers.MessageBox.Show("Гараж успешно загружен", Icon.Success);
                     }
                     else
                     {
-                        Helpers.MessageBox.ShowError("Не получилось загрузить гараж, возможно файл пуст");
+                        Helpers.MessageBox.ShowError("Не получилось загрузить гараж, файл пуст или имеет неверный формат");
                     }
                 }
             }
@@ -256,11 +257,12 @@ namespace DumpTruck.ViewModels
                 using (var file = new StreamWriter(fileName, false, new UTF8Encoding(true)))
                 {
                     _garageCollection.DumpToFile(file);
+                    Helpers.MessageBox.Show("Данные гаража успещно сохранены в файл", Icon.Success);
                 }
             }
             catch (IOException e)
             {
-                Helpers.MessageBox.ShowError($"Unable to save to file {fileName} with error {e}");
+                Helpers.MessageBox.ShowError($"Не получилось сохранить данные в файл {fileName}. Ошибка {e.Message}");
             }
         }
     }

@@ -83,7 +83,7 @@ public abstract class Serializable : ISerializable
     /// <returns></returns>
     public override string ToString()
     {
-        return $"{_safeString(DumpName())}{_classSeparator}{AttrsToString()}\n{ChildrenToString()}";
+        return $"{_safeString(DumpName())}{_classSeparator}{AttrsToString()}{Environment.NewLine}{ChildrenToString()}";
     }
 
     private static string _safeString(string origString)
