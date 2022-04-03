@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -98,7 +97,6 @@ public partial class CarConfigWindow : Window
 
     private void ModelSelected(string? receiver, DataObject dataObject)
     {
-        Trace.WriteLine("Selected Model " + dataObject.GetText());
         switch (dataObject.GetText())
         {
             case "SimpleModel":
@@ -114,7 +112,6 @@ public partial class CarConfigWindow : Window
     private void ColorSelected(string? receiver, DataObject dataObject)
     {
         var color = dataObject.Get(COLOR) as string;
-        Trace.WriteLine("Selected Color " + receiver + " / " + color);
         
         if (receiver == null || color == null) return;
         

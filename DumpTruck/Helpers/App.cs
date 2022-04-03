@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using System.Diagnostics;
 using Avalonia.Controls;
 
 namespace DumpTruck.Helpers;
@@ -17,7 +16,6 @@ public static class App
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
         {
-            Trace.WriteLine("Exit");
             lifetime.Shutdown();
         }
     }

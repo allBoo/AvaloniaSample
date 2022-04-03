@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Windows.Input;
@@ -10,11 +10,14 @@ using DumpTruck.Models;
 using DumpTruck.Views;
 using MessageBox.Avalonia.Enums;
 using ReactiveUI;
+using NLog;
 
 namespace DumpTruck.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+        
         private GarageCollection _garageCollection;
         private GarageArea GarageArea { get; }
         
@@ -126,7 +129,6 @@ namespace DumpTruck.ViewModels
 
         private void _addVehicle(IVehicle vehicle)
         {
-            Trace.WriteLine("Got New Vehicle " + vehicle);
             GarageArea.AddToGarage(vehicle);
         }
 
@@ -135,7 +137,6 @@ namespace DumpTruck.ViewModels
             if (!string.IsNullOrEmpty(GaragePlace))
             {
                 var garagePlaceIdx = Convert.ToInt32(GaragePlace);
-                Trace.WriteLine("Take from place " + garagePlaceIdx);
                 GarageArea.TakeFromGarage(garagePlaceIdx);
             }
         }
@@ -144,12 +145,17 @@ namespace DumpTruck.ViewModels
         {
             if (!string.IsNullOrEmpty(NewGarageName))
             {
-                if (!_garageCollection.AddGarage(NewGarageName))
+                try
                 {
+                    logger.Debug($"Add new Garage {NewGarageName}");
+                    _garageCollection.AddGarage(NewGarageName);
+                    ReloadLevels();
+                }
+                catch (DuplicateNameException)
+                {
+                    logger.Warn($"Garage '{NewGarageName}' already exists");
                     Helpers.MessageBox.ShowError("Гараж с таким названием уже существует");
                 }
-
-                ReloadLevels();
             }
         }
         
@@ -157,14 +163,15 @@ namespace DumpTruck.ViewModels
         {
             if (index > -1 && await Helpers.MessageBox.Confirm("Удалить гараж?"))
             {
-                Trace.WriteLine("Delete Garage " + index + " / " + GarageItems[index]);
                 try
                 {
+                    logger.Debug("Delete Garage " + index + " / " + GarageItems[index]);
                     _garageCollection.DelGarage(GarageItems[index]);
                     ReloadLevels();
                 }
-                catch (KeyNotFoundException e)
+                catch (Exception e)
                 {
+                    logger.Warn($"Unable to delete Garage with error {e.Message}");
                     Helpers.MessageBox.ShowError(e.Message);
                 }
             }
@@ -176,12 +183,12 @@ namespace DumpTruck.ViewModels
             
             if (index > -1)
             {
-                Trace.WriteLine("Garage Changed to " + index + " / " + GarageItems[index]);
+                logger.Info("Garage Changed to " + index + " / " + GarageItems[index]);
                 GarageArea.SetGarage(_garageCollection[GarageItems[index]]);
             }
             else
             {
-                Trace.WriteLine("Garage Unselected");
+                logger.Info("Garage Unselected");
                 GarageArea.SetGarage(null);
             }
         }
@@ -211,32 +218,26 @@ namespace DumpTruck.ViewModels
 
                 using (var file = new StreamReader(fileName[0]))
                 {
-                    if (Serializable.LoadFromFile<GarageCollection>(file, _garageCollection.DumpName()) is
-                        GarageCollection collection)
-                    {
+                    _garageCollection = Serializable.LoadFromFile<GarageCollection>(file, _garageCollection.DumpName());
+                    ReloadLevels();
 
-                        _garageCollection = collection;
-                        ReloadLevels();
-
-                        Helpers.MessageBox.Show("Гараж успешно загружен", Icon.Success);
-                    }
-                    else
-                    {
-                        Helpers.MessageBox.ShowError(
-                            "Не получилось загрузить гараж, файл пуст или имеет неверный формат");
-                    }
+                    logger.Info("Garage info loaded from file");
+                    Helpers.MessageBox.Show("Гараж успешно загружен", Icon.Success);
                 }
             }
             catch (IOException e)
             {
+                logger.Warn("Unable to read file " + fileName);
                 Helpers.MessageBox.ShowError($"Не получилось прочитать файл {fileName}. Ошибка: {e.Message}");
             }
             catch (Serializable.UnserializeException e)
             {
+                logger.Warn("Unable to unserialize data with error " + e.Message);
                 Helpers.MessageBox.ShowError($"Не получилось загрузить гараж. Ошибка {e.Message}");
             }
             catch (Exception e)
             {
+                logger.Warn("Load file unknown error: " + e.Message);
                 Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
             }
         }
@@ -268,15 +269,18 @@ namespace DumpTruck.ViewModels
                 using (var file = new StreamWriter(fileName, false, new UTF8Encoding(true)))
                 {
                     _garageCollection.DumpToFile(file);
+                    logger.Info("Garage info successfully saved into file " + fileName);
                     Helpers.MessageBox.Show("Данные гаража успещно сохранены в файл", Icon.Success);
                 }
             }
             catch (IOException e)
             {
+                logger.Warn("Unable to save data with error:" + e.Message);
                 Helpers.MessageBox.ShowError($"Не получилось сохранить данные в файл {fileName}. Ошибка {e.Message}");
             }
             catch (Exception e)
             {
+                logger.Warn("Save file unknown error: " + e.Message);
                 Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
             }
         }

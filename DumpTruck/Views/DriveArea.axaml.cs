@@ -1,18 +1,19 @@
 using System;
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using DumpTruck.ViewModels;
 using DumpTruck.Models;
 using DumpTruck.Tests;
+using NLog;
 
 namespace DumpTruck.Views;
 
 public partial class DriveArea : UserControl
 {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    
     private IVehicle _vehicle;
 
     public int VehicleSpeed => _vehicle.Speed;
@@ -77,7 +78,7 @@ public partial class DriveArea : UserControl
 
     public void Resize(Rect newSize)
     {
-        Trace.WriteLine("Drive Area Size changed " + newSize);
+        logger.Debug("Drive Area Size changed " + newSize);
         _vehicle?.ChangeBorders((int)newSize.Right, (int)newSize.Bottom);
     }
 

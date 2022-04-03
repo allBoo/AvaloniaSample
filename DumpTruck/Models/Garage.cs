@@ -1,14 +1,16 @@
 using System;
 using Avalonia;
 using Avalonia.Media;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 
 namespace DumpTruck.Models;
 
 public class Garage<T> : Serializable where T : class, IVehicle
 {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    
     /// <summary>
     /// Список объектов, которые храним
     /// </summary>
@@ -138,12 +140,12 @@ public class Garage<T> : Serializable where T : class, IVehicle
         // expand or reduce garage
         if (Capacity != oldCapacity)
         {
-            Trace.WriteLine("Garage new Dimensions: Width = " + Width + " / Height = " + Height);
+            logger.Debug("Garage new Dimensions: Width = " + Width + " / Height = " + Height);
 
             // reduce garage
             if (_places.Count > Capacity)
             {
-                Trace.WriteLine("Reduce Garage to the new Capacity " + Capacity);
+                logger.Info("Reduce Garage to the new Capacity " + Capacity);
                 _places.RemoveRange(Capacity, _places.Count - Capacity);
             }
         }

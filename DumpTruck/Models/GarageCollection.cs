@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Data;
 using System.Linq;
 
 namespace DumpTruck.Models;
@@ -70,7 +70,7 @@ public class GarageCollection : Serializable
     {
         if (_garageStages.ContainsKey(name))
         {
-            return false;
+            throw new DuplicateNameException();
         }
         
         _garageStages[name] = new Garage<IVehicle>(name, _pictureWidth, _pictureHeight);

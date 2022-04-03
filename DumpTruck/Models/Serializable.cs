@@ -116,7 +116,7 @@ public abstract class Serializable : ISerializable
         }
     }
 
-    public static T? LoadFromFile<T>(System.IO.StreamReader file, string headerToken) where T : Serializable
+    public static T LoadFromFile<T>(System.IO.StreamReader file, string headerToken) where T : Serializable
     {
         T? instance = null;
         string? line;
@@ -147,6 +147,11 @@ public abstract class Serializable : ISerializable
             {
                 instance.AddChild(className, classVars);
             }
+        }
+
+        if (instance == null)
+        {
+            throw new UnserializeException("File is empty or has invalid format");
         }
         
         return instance;

@@ -3,14 +3,15 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Markup.Xaml;
-using System.Diagnostics;
 using DumpTruck.Models;
-
+using NLog;
     
 namespace DumpTruck.Views;
 
 public partial class GarageArea : UserControl
 {
+    private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    
     private Garage<IVehicle>? _garage;
     
     public GarageArea()
@@ -53,7 +54,7 @@ public partial class GarageArea : UserControl
     
     public void Resize(Rect newSize)
     {
-        Trace.WriteLine("Garage Area Size Changed " + newSize);
+        logger.Debug("Garage Area Size Changed " + newSize);
         _garage?.Resize((int)newSize.Width, (int)newSize.Height);
         Draw();
     }
@@ -105,15 +106,14 @@ public partial class GarageArea : UserControl
     {
         if (_garage == null) return;
         
-        Trace.WriteLine("Add '" + vehicle.GetType().Name + "' Car / Speed " + vehicle.Speed + 
-                        " / Weight " + vehicle.Weight + " / Color " + vehicle.BodyColor);
-
         try
         {
             _ = _garage + vehicle;
+            logger.Info($"New car {vehicle} has added to the garage {_garage.Name}");
         }
         catch (OverflowException e)
         {
+            logger.Warn($"Unable to add car to the garage {_garage.Name} with error {e.Message}");
             Helpers.MessageBox.ShowError(e.Message);
         }
     }
@@ -128,10 +128,13 @@ public partial class GarageArea : UserControl
             var driveWindow = new DriveWindow(car);
             Helpers.App.ShowDialog(driveWindow);
             Draw();
+            
+            logger.Info($"Car {car} has beem taken from grarage {_garage.Name}/{index}");
         }
         catch (IndexOutOfRangeException e) 
         {
-            Helpers.MessageBox.ShowError(e.Message);            
+            logger.Warn($"Unable to take car from garage {_garage.Name}/{index} with error {e.Message}");
+            Helpers.MessageBox.ShowError(e.Message);
         }
     }
 }
