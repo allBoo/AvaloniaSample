@@ -109,6 +109,8 @@ public partial class GarageArea : UserControl
         try
         {
             _ = _garage + vehicle;
+            Draw();
+            
             logger.Info($"New car {vehicle} has added to the garage {_garage.Name}");
         }
         catch (OverflowException e)
