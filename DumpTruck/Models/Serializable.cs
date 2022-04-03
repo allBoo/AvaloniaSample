@@ -38,7 +38,7 @@ public abstract class Serializable : ISerializable
     /// Serialize attrs into string
     /// </summary>
     /// <returns></returns>
-    public virtual string[] DumpAttrs() => Array.Empty<string>();
+    public virtual object[] DumpAttrs() => Array.Empty<object>();
 
     /// <summary>
     /// Returns list of the serializable children

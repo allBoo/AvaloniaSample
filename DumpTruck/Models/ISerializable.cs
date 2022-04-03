@@ -14,7 +14,7 @@ public interface ISerializable
     /// Serialize attrs into string
     /// </summary>
     /// <returns></returns>
-    public string[] DumpAttrs();
+    public object[] DumpAttrs();
 
     /// <summary>
     /// Returns list of the serializable children
@@ -40,6 +40,4 @@ public interface ISerializable
     /// </summary>
     /// <param name="file"></param>
     public void DumpToFile(System.IO.StreamWriter file);
-
-    // public void LoadFromFile(System.IO.StreamWriter file);
 }

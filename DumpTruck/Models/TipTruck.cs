@@ -95,10 +95,10 @@ public class TipTruck : DumpTruck
         }
     }
 
-    public override string[] DumpAttrs()
+    public override object[] DumpAttrs()
     {
         var baseAttrs = base.DumpAttrs();
-        var myAttrs = new string[] { Tipper.ToString(), TipperColor.ToString(), Tent.ToString(), TentColor.ToString()};
+        var myAttrs = new object[] { Tipper, TipperColor, Tent, TentColor};
 
         return baseAttrs.Concat(myAttrs).ToArray();
     }

@@ -45,7 +45,7 @@ public class GarageCollection : Serializable
         _pictureWidth = pictureWidth;
         _pictureHeight = pictureHeight;
 
-        _childName = new Garage<IVehicle>(new[]{"", "0", "0"}).DumpName();
+        _childName = new Garage<IVehicle>().DumpName();
     }
 
     // used by the Serializer
@@ -107,7 +107,7 @@ public class GarageCollection : Serializable
     /// <returns></returns>
     public Garage<IVehicle> this[string ind] => _garageStages[ind];
     
-    public override string[] DumpAttrs() => new []{_pictureWidth.ToString(), _pictureHeight.ToString()};
+    public override object[] DumpAttrs() => new object[]{_pictureWidth, _pictureHeight};
     
     public override IEnumerable<ISerializable>? DumpChildren()
     {

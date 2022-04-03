@@ -293,5 +293,5 @@ public class DumpTruck : Serializable, IVehicle
         return (_carWidth, _carHeight);
     }
 
-    public override string[] DumpAttrs() => new[]{Speed.ToString(), Weight.ToString(), BodyColor.ToString()};
+    public override object[] DumpAttrs() => new object[]{Speed, Weight, BodyColor};
 }

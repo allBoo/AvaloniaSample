@@ -83,7 +83,9 @@ public class Garage<T> : Serializable where T : class, IVehicle
             throw new UnserializeException("Unable to create Garage. Wrong amount of vars");
         }
     }
-    
+
+    public Garage() : this("", 0, 0){}
+
     /// <summary>
     /// Перегрузка оператора сложения
     /// Логика действия: в гараж добавляется автомобиль
@@ -187,7 +189,7 @@ public class Garage<T> : Serializable where T : class, IVehicle
     
     public override string DumpName() => "Garage";
     
-    public override string[] DumpAttrs() => new []{_nameSafe, _pictureWidth.ToString(), _pictureHeight.ToString()};
+    public override object[] DumpAttrs() => new object[]{_nameSafe, _pictureWidth, _pictureHeight};
 
     public override IEnumerable<ISerializable>? DumpChildren()
     {
