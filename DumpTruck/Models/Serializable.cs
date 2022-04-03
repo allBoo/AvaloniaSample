@@ -28,6 +28,9 @@ public abstract class Serializable : ISerializable
     /// </summary>
     protected static readonly char _classSeparator = ':';
 
+    protected static readonly char _classSeparatorSafe = '\ufe55';
+    protected static readonly char _separatorSafe = '\uff1b';
+
     /// <summary>
     /// Returns object name for the serialized form
     /// </summary>
@@ -70,7 +73,8 @@ public abstract class Serializable : ISerializable
     /// <returns></returns>
     private string AttrsToString()
     {
-        return string.Join(_separator, DumpAttrs());
+        var stringArgs = DumpAttrs().Select(el => _safeString(el.ToString() ?? ""));
+        return string.Join(_separator, stringArgs);
     }
     
     /// <summary>
@@ -79,7 +83,19 @@ public abstract class Serializable : ISerializable
     /// <returns></returns>
     public override string ToString()
     {
-        return $"{DumpName()}{_classSeparator}{AttrsToString()}\n{ChildrenToString()}";
+        return $"{_safeString(DumpName())}{_classSeparator}{AttrsToString()}\n{ChildrenToString()}";
+    }
+
+    private static string _safeString(string origString)
+    {
+        return origString.Replace(_separator, _separatorSafe).
+            Replace(_classSeparator, _classSeparatorSafe);
+    }
+
+    private static string _loadSafeString(string origString)
+    {
+        return origString.Replace(_separatorSafe, _separator).
+            Replace(_classSeparatorSafe, _classSeparator);
     }
 
     /// <summary>
@@ -113,8 +129,8 @@ public abstract class Serializable : ISerializable
                 throw new UnserializeStringException(line, "No class attrs");
             }
 
-            var className = chunks[0];
-            var classVars = chunks[1].Split(_separator);
+            var className = _loadSafeString(chunks[0]);
+            var classVars = chunks[1].Split(_separator).Select(_loadSafeString).ToArray();
 
             if (className == headerToken)
             {
