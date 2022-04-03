@@ -57,6 +57,7 @@ namespace DumpTruck.ViewModels
         public ICommand AddVehicleCommand { get; }
         public ICommand TakeObjectCommand { get; }
         public ICommand CreateGarageCommand { get; }
+        public ICommand SortCommand { get; }
         public ICommand DeleteGarageCommand { get; }
         public ICommand GarageChangedCommand { get; }
 
@@ -75,6 +76,7 @@ namespace DumpTruck.ViewModels
             AddVehicleCommand = ReactiveCommand.Create(AddVehicle);
             TakeObjectCommand = ReactiveCommand.Create(TakeFromGarage);
             CreateGarageCommand = ReactiveCommand.Create(CreateNewGarage);
+            SortCommand = ReactiveCommand.Create(SortCars);
             DeleteGarageCommand = ReactiveCommand.Create<int>(DeleteGarage);
             GarageChangedCommand = ReactiveCommand.Create<int>(GarageChanged);
         }
@@ -156,6 +158,15 @@ namespace DumpTruck.ViewModels
                     logger.Warn($"Garage '{NewGarageName}' already exists");
                     Helpers.MessageBox.ShowError("Гараж с таким названием уже существует");
                 }
+            }
+        }
+
+        private void SortCars()
+        {
+            if (SelectedGarageIndex > -1)
+            {
+                _garageCollection[GarageItems[(int)SelectedGarageIndex]].Sort();
+                GarageArea.Draw();
             }
         }
         

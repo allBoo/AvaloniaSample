@@ -86,7 +86,15 @@
                         </Button>
                     </StackPanel>
                     
-                    <Panel Height="50"></Panel>
+                    
+                    <Panel Height="20"></Panel>
+                    <Button HorizontalAlignment="Center"
+                            Command="{Binding SortCommand}" 
+                            IsEnabled="{Binding IsGarageActive}">
+                        <TextBlock TextWrapping="Wrap">Сортировка</TextBlock>
+                    </Button>
+                    
+                    <Panel Height="20"></Panel>
                     <Button HorizontalAlignment="Center"
                             Command="{Binding AddVehicleCommand}" 
                             IsEnabled="{Binding IsGarageActive}" HotKey="Ctrl+N">
