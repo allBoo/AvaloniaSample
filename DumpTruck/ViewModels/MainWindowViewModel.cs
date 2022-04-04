@@ -144,18 +144,17 @@ namespace DumpTruck.ViewModels
             configWindow.Show(Helpers.App.MainWindow());
         }
 
-        private void _addVehicle(IVehicle vehicle)
+        private bool _addVehicle(IVehicle vehicle)
         {
-            GarageArea.AddToGarage(vehicle);
+            return GarageArea.AddToGarage(vehicle);
         }
 
-        private void TakeFromGarage()
+        private bool TakeFromGarage()
         {
-            if (!string.IsNullOrEmpty(GaragePlace))
-            {
-                var garagePlaceIdx = Convert.ToInt32(GaragePlace);
-                GarageArea.TakeFromGarage(garagePlaceIdx);
-            }
+            if (string.IsNullOrEmpty(GaragePlace)) return false;
+            
+            var garagePlaceIdx = Convert.ToInt32(GaragePlace);
+            return GarageArea.TakeFromGarage(garagePlaceIdx);
         }
 
         private void CreateNewGarage()

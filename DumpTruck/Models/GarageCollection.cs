@@ -23,24 +23,11 @@ public class GarageCollection : Serializable, IEnumerator<string>, IEnumerable<s
     /// своему индексу к ключу словаря, по которму будет возвращаться запись)
     /// </summary>
     private int _currentIndex = -1;
-    
+
     /// <summary>
     /// Возвращение текущего элемента для IEnumerator
     /// </summary>
-    public string Current {
-        get
-        {
-            try
-            {
-                return _keys[_currentIndex];
-            }
-            catch (IndexOutOfRangeException)
-            {
-                _currentIndex = -1;
-                throw new InvalidOperationException();
-            }
-        }
-    }
+    public string Current => _keys[_currentIndex];
     
     /// <summary>
     /// Возвращение текущего элемента для IEnumerator
@@ -195,6 +182,4 @@ public class GarageCollection : Serializable, IEnumerator<string>, IEnumerable<s
     /// </summary>
     /// <returns></returns>
     IEnumerator IEnumerable.GetEnumerator() => this;
-    
-    
 }

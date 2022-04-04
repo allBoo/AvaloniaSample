@@ -102,9 +102,9 @@ public partial class GarageArea : UserControl
         }
     }
 
-    public void AddToGarage(IVehicle vehicle)
+    public bool AddToGarage(IVehicle vehicle)
     {
-        if (_garage == null) return;
+        if (_garage == null) return false;
 
         try
         {
@@ -112,6 +112,7 @@ public partial class GarageArea : UserControl
             Draw();
 
             logger.Info($"New car {vehicle} has added to the garage {_garage.Name}");
+            return true;
         }
         catch (OverflowException e)
         {
@@ -123,11 +124,12 @@ public partial class GarageArea : UserControl
             logger.Warn($"Unable to add car to the garage {_garage.Name} with error {e.Message}");
             Helpers.MessageBox.ShowError(e.Message, "Дубликат");
         }
+        return false;
     }
 
-    public void TakeFromGarage(int index)
+    public bool TakeFromGarage(int index)
     {
-        if (_garage == null) return;
+        if (_garage == null) return false;
 
         try
         {
@@ -137,11 +139,13 @@ public partial class GarageArea : UserControl
             Draw();
             
             logger.Info($"Car {car} has beem taken from grarage {_garage.Name}/{index}");
+            return true;
         }
         catch (IndexOutOfRangeException e) 
         {
             logger.Warn($"Unable to take car from garage {_garage.Name}/{index} with error {e.Message}");
             Helpers.MessageBox.ShowError(e.Message);
         }
+        return false;
     }
 }

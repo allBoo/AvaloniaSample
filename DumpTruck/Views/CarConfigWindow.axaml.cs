@@ -20,11 +20,11 @@ public partial class CarConfigWindow : Window
     
     private CarConfigWindowViewModel _vm;
 
-    private readonly Action<IVehicle>? _callback;
+    private readonly Func<IVehicle, bool>? _callback;
 
     private string? _receiver;
     
-    public CarConfigWindow(Action<IVehicle>? callback = null)
+    public CarConfigWindow(Func<IVehicle, bool>? callback = null)
     {
         InitializeComponent();
 #if DEBUG
@@ -86,8 +86,14 @@ public partial class CarConfigWindow : Window
     {
         var vehicle = _vm.GetVehicle();
         if (_callback != null && vehicle != null)
-            _callback.Invoke(vehicle);
-        Close(vehicle);
+        {
+            var res = _callback.Invoke(vehicle);
+            if (res) Close(vehicle);
+        }
+        else
+        {
+            Close(vehicle);
+        }
     }
 
     private void CancelClick(object? sender, RoutedEventArgs e)
