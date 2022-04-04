@@ -262,11 +262,8 @@ public class Garage<T> : Serializable, IStorable where T : class, IVehicle
     {
         if (context is not DumpTruckDbContext ctx) return;
 
-        logger.Warn("SAVE GARAGE ");
         ctx.Garages.Add(this as Garage<IVehicle>);
         ctx.SaveChanges();
-        
-        logger.Warn("AFTER SAVE GARAGE = " + Id);
     }
     
     public virtual void Delete(DbContext context)

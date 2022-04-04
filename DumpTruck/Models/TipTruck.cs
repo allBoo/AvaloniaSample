@@ -157,8 +157,6 @@ public class TipTruck : DumpTruck, IEquatable<TipTruck>, IComparable<TipTruck>
     
     public override void Save(DbContext context, int? parentId = null)
     {
-        logger.Warn($"SAVE TT {this} Parent = " + parentId);
-        
         if (context is not DumpTruckDbContext ctx) return;
         if (parentId == null) return;
         

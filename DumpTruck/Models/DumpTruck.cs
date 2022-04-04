@@ -368,8 +368,6 @@ public class DumpTruck : Serializable, IVehicle, IStorable, IEquatable<DumpTruck
 
     public virtual void Save(DbContext context, int? parentId = null)
     {
-        logger.Warn($"SAVE DT {this} Parent = " + parentId);
-        
         if (context is not DumpTruckDbContext ctx) return;
         if (parentId == null) return;
         
