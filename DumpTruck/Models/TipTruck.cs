@@ -1,8 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 
 namespace DumpTruck.Models;
@@ -10,6 +13,10 @@ namespace DumpTruck.Models;
 public class TipTruck : DumpTruck, IEquatable<TipTruck>, IComparable<TipTruck>
 {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+    
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
     
     /// <summary>
     /// Признак наличия кузова
@@ -61,6 +68,11 @@ public class TipTruck : DumpTruck, IEquatable<TipTruck>, IComparable<TipTruck>
         TipperColor = Color.Parse(serializedVars[4]);
         Tent = Convert.ToBoolean(serializedVars[5]);
         TentColor = Color.Parse(serializedVars[6]);
+    }
+
+    public TipTruck()
+    {
+        // used by EF
     }
 
     /// <summary>
@@ -141,6 +153,26 @@ public class TipTruck : DumpTruck, IEquatable<TipTruck>, IComparable<TipTruck>
         }
 
         return res;
+    }
+    
+    public override void Save(DbContext context, int? parentId = null)
+    {
+        logger.Warn($"SAVE TT {this} Parent = " + parentId);
+        
+        if (context is not DumpTruckDbContext ctx) return;
+        if (parentId == null) return;
+        
+        GarageId = (int)parentId;
+        ctx.TipTrucks.Add(this);
+        ctx.SaveChanges();
+    }
+    
+    public override void Delete(DbContext context)
+    {
+        if (context is not DumpTruckDbContext ctx) return;
+        if (Id == 0) return;
+
+        ctx.TipTrucks.Remove(this);
     }
 
     /// <summary>

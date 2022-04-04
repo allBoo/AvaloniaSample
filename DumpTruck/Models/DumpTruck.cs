@@ -1,7 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Avalonia.Media;
 using Avalonia.Media.Immutable;
 using Avalonia;
+using Avalonia.Input;
+using Microsoft.EntityFrameworkCore;
 using Brushes = Avalonia.Media.Brushes;
 using Pen = Avalonia.Media.Pen;
 using Point = Avalonia.Point;
@@ -9,10 +13,17 @@ using NLog;
 
 namespace DumpTruck.Models;
 
-public class DumpTruck : Serializable, IVehicle, IEquatable<DumpTruck>, IComparable<DumpTruck>
+public class DumpTruck : Serializable, IVehicle, IStorable, IEquatable<DumpTruck>, IComparable<DumpTruck>
 {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
-    
+
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+
+    [ForeignKey("Garage")]
+    public int GarageId { set; get; }
+
     /// <summary>
     /// Скорость
     /// </summary>
@@ -115,7 +126,12 @@ public class DumpTruck : Serializable, IVehicle, IEquatable<DumpTruck>, ICompara
         _carWidth = carWidth;
         _carHeight = carHeight;
     }
-    
+
+    public DumpTruck()
+    {
+        // used by EF
+    }
+        
     /// <summary>
     /// Установка позиции автомобиля
     /// </summary>
@@ -282,7 +298,7 @@ public class DumpTruck : Serializable, IVehicle, IEquatable<DumpTruck>, ICompara
         MoveTransport(direction);
         return _makeStep;
     }
-    
+
     /// <summary>
     /// Отрисовка объекта
     /// </summary>
@@ -348,6 +364,26 @@ public class DumpTruck : Serializable, IVehicle, IEquatable<DumpTruck>, ICompara
 
         return res;
 
+    }
+
+    public virtual void Save(DbContext context, int? parentId = null)
+    {
+        logger.Warn($"SAVE DT {this} Parent = " + parentId);
+        
+        if (context is not DumpTruckDbContext ctx) return;
+        if (parentId == null) return;
+        
+        GarageId = (int)parentId;
+        ctx.DumpTrucks.Add(this);
+        ctx.SaveChanges();
+    }
+
+    public virtual void Delete(DbContext context)
+    {
+        if (context is not DumpTruckDbContext ctx) return;
+        if (Id == 0) return;
+
+        ctx.DumpTrucks.Remove(this);
     }
 
     /// <summary>

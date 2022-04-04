@@ -94,6 +94,8 @@ namespace DumpTruck.ViewModels
             SortCommand = ReactiveCommand.Create(SortCars);
             DeleteGarageCommand = ReactiveCommand.Create<string>(DeleteGarage);
             GarageChangedCommand = ReactiveCommand.Create<string>(GarageChanged);
+            
+            // Confi
         }
 
         public MainWindowViewModel()
@@ -243,6 +245,7 @@ namespace DumpTruck.ViewModels
 
                 using (var file = new StreamReader(fileName[0]))
                 {
+                    _garageCollection.Truncate();
                     _garageCollection = Serializable.LoadFromFile<GarageCollection>(file, _garageCollection.DumpName());
                     ReloadLevels();
 
@@ -262,7 +265,7 @@ namespace DumpTruck.ViewModels
             }
             catch (Exception e)
             {
-                logger.Warn("Load file unknown error: " + e.Message);
+                logger.Warn("Load file unknown error: " + e.Message + "\n" + e.StackTrace);
                 Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
             }
         }
