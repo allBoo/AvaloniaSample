@@ -265,14 +265,6 @@ namespace DumpTruck.ViewModels
                 logger.Warn("Load file unknown error: " + e.Message);
                 Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
             }
-            
-            logger.Warn($"KEYS {_garageCollection.Count} / " + string.Join(",", _garageCollection.ToList()));
-            // _garageCollection.Reset();
-            foreach (var kk in _garageCollection)
-            {
-                // 
-                logger.Warn($"K {kk}");
-            }
         }
 
         private async void SaveFile()
