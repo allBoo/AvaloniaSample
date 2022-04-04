@@ -160,7 +160,7 @@ public class Garage<T> : Serializable, IStorable where T : class, IVehicle
         using (var ctx = new DumpTruckDbContext())
         {
             if (car is IStorable storableCar)
-                storableCar.Save(ctx, Id);
+                storableCar.Delete(ctx);
         }
 
         return car;
