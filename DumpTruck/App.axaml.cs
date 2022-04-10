@@ -1,10 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using DumpTruck.ViewModels;
 using DumpTruck.Views;
-using System;
-using System.Diagnostics;
 
 namespace DumpTruck
 {
@@ -13,10 +10,6 @@ namespace DumpTruck
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-            
-            Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
-            Trace.AutoFlush = true;
-            Trace.Indent();
         }
 
         public override void OnFrameworkInitializationCompleted()

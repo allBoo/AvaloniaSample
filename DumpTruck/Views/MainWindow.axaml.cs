@@ -1,4 +1,6 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using DumpTruck.ViewModels;
 
 namespace DumpTruck.Views
@@ -10,19 +12,23 @@ namespace DumpTruck.Views
         public MainWindow()
         {
             InitializeComponent();
-            
-            // Create new data model
-            Models.DumpTruck dataModel = new Models.DumpTruck();
-            
-            // create interaction area for the model
-            DriveArea area = new DriveArea(dataModel);
-            
+#if DEBUG
+            this.AttachDevTools();
+#endif
             // search DriveArea container and insert DriveArea control into it
-            var driveAreaPanel = this.FindControl<Panel>("DriveArea");
-            driveAreaPanel.Children.Add(area);
+            var garage = this.FindControl<GarageArea>("GarageArea");
 
             // create window view-model and pass DriveArea into it, so Window can interact with it
-            DataContext = new MainWindowViewModel(area);
+            _vm = new MainWindowViewModel(garage);
+            DataContext = _vm;
+        }
+
+        private void TakeCarOnKeyUp(object? sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                _vm.TakeObjectCommand.Execute(null);
+            }
         }
     }
 }

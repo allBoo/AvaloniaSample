@@ -1,0 +1,42 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:DumpTruck.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="350"
+        x:Class="DumpTruck.Views.DriveWindow"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="DumpTruck Driving"
+        
+        MinHeight="300" MinWidth="300" Width="800" Height="600"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True"
+        KeyUp="WindowOnKeyUp"
+>
+    <Design.DataContext>
+        <vm:DriveWindowViewModel/>
+    </Design.DataContext>
+    <Panel>
+        <ExperimentalAcrylicBorder IsHitTestVisible="False">
+            <ExperimentalAcrylicBorder.Material>
+                <ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.65" />
+            </ExperimentalAcrylicBorder.Material>
+        </ExperimentalAcrylicBorder>
+        
+        <Panel Name="DriveArea" Margin="0 0 0 25"></Panel>
+        
+        <WrapPanel Height="25" VerticalAlignment="Bottom" Name="StatusBar" Background="gray" DockPanel.Dock="Left">
+            <TextBlock Padding="1 3 5 0">Скорость: </TextBlock>
+            <TextBlock Padding="1 3 5 0" Text="{Binding Speed}"></TextBlock>
+            <TextBlock Padding="10 3 5 0">Вес: </TextBlock>
+            <TextBlock Padding="1 3 5 0" Text="{Binding Weight}"></TextBlock>
+            <TextBlock Padding="10 3 5 0">Цвет: </TextBlock>
+            <Panel Margin="0 3 0 0" Width="20" Background="{Binding BodyColor}"></Panel>
+        </WrapPanel>
+    </Panel>
+</Window>

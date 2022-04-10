@@ -2,14 +2,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:DumpTruck.Views"
+        xmlns:uc="using:DumpTruck.Controls"
         xmlns:vm="using:DumpTruck.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:v="using:DumpTruck.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
         x:Class="DumpTruck.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
-        Title="DumpTruck"
+        Title="DumpTruck Garage"
         
-        MinHeight="200" MinWidth="300"
+        MinHeight="300" MinWidth="400"
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
         ExtendClientAreaToDecorationsHint="True"
@@ -29,35 +30,103 @@
                     MaterialOpacity="0.65" />
             </ExperimentalAcrylicBorder.Material>
         </ExperimentalAcrylicBorder>
-
-        <Panel VerticalAlignment="Top" Name="MenuPanel" >
-            <Menu Margin="10 0 0 0">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Exit" Command="{Binding ExitCommand}" 
-                              HotKey="Ctrl+Q"/>
-                </MenuItem>
-            </Menu>
-            <Separator BorderThickness="0,0,0,1" BorderBrush="gray"></Separator>
-        </Panel>
         
-        <Panel Margin="0 30 0 30" Name="ContentPanel">
-            <Panel Name="DriveArea" Margin="0 3 0 0" ></Panel>
-            <Panel Margin="20 0 0 5"  
-                   HorizontalAlignment="Left" VerticalAlignment="Bottom">
-                <Button Command="{Binding CreateCommand}" HotKey="Ctrl+N">
-                    Создать
-                </Button>
+        <DockPanel Margin="0 0 0 0" Name="ContentPanel" >
+            <Panel VerticalAlignment="Top" Name="MenuPanel" DockPanel.Dock="Top">
+                <Menu Margin="10 0 0 0">
+                    <MenuItem Header="_File">
+                        <MenuItem Header="_Open" Command="{Binding OpenFileCommand}" 
+                                  HotKey="Ctrl+O"/>
+                        <MenuItem Header="_Save" Command="{Binding SaveFileCommand}" 
+                                  HotKey="Ctrl+S"/>
+                        <Separator></Separator>
+                        <MenuItem Header="_Exit" Command="{Binding ExitCommand}" 
+                                  HotKey="Ctrl+Q"/>
+                    </MenuItem>
+                </Menu>
+                <Separator BorderThickness="0,0,0,1" BorderBrush="gray"></Separator>
             </Panel>
-        </Panel>
-        
-        <WrapPanel Height="25" VerticalAlignment="Bottom" Name="StatusBar" Background="gray">
-            <TextBlock Padding="1 3 5 0">Скорость: </TextBlock>
-            <TextBlock Padding="1 3 5 0" Text="{Binding Speed}"></TextBlock>
-            <TextBlock Padding="10 3 5 0">Вес: </TextBlock>
-            <TextBlock Padding="1 3 5 0" Text="{Binding Weight}"></TextBlock>
-            <TextBlock Padding="10 3 5 0">Цвет: </TextBlock>
-            <Panel Margin="0 3 0 0" Width="20" Background="{Binding BodyColor}"></Panel>
-        </WrapPanel>
+            
+            <Panel>
+                <Panel Margin="0 0 180 0" 
+                       VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <v:GarageArea Margin="5" Name="GarageArea"></v:GarageArea>
+                </Panel>
+                <Separator BorderThickness="1,0,0,0" BorderBrush="gray"
+                           VerticalAlignment="Stretch" HorizontalAlignment="Right"
+                           Margin="0 0 180 0" Width="1"></Separator>
+                <StackPanel Margin="0 0 0 0" Spacing="10" Width="180" 
+                            HorizontalAlignment="Right">
+                    <Panel></Panel>
+                    
+                    <StackPanel Spacing="10" Margin="10 0 10 0">
+                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">Гаражи:</TextBlock>
+                        <TextBox Text="{Binding NewGarageName}"></TextBox>
+                        <Button HorizontalAlignment="Center"
+                                Command="{Binding CreateGarageCommand}">
+                            <TextBlock TextWrapping="Wrap">Добавить гараж</TextBlock>
+                        </Button>
+                    
+                        <Panel></Panel>
+                        <ListBox Height="160" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                                 Background="gray" Items="{Binding GarageItems}"
+                                 SelectedIndex="{Binding SelectedGarageIndex}"
+                                 SelectedItem="{Binding SelectedItem}"
+                        >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border CornerRadius="5" Padding="1">
+                                        <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <Button HorizontalAlignment="Center"
+                                Command="{Binding DeleteGarageCommand}" CommandParameter="{Binding SelectedItem}">
+                            <TextBlock TextWrapping="Wrap">Удалить гараж</TextBlock>
+                        </Button>
+                    </StackPanel>
+                    
+                    
+                    <Panel Height="20"></Panel>
+                    <Button HorizontalAlignment="Center"
+                            Command="{Binding SortCommand}" 
+                            IsEnabled="{Binding IsGarageActive}">
+                        <TextBlock TextWrapping="Wrap">Сортировка</TextBlock>
+                    </Button>
+                    
+                    <Panel Height="20"></Panel>
+                    <Button HorizontalAlignment="Center"
+                            Command="{Binding AddVehicleCommand}" 
+                            IsEnabled="{Binding IsGarageActive}" HotKey="Ctrl+N">
+                        <TextBlock TextWrapping="Wrap">Добавить грузовик</TextBlock>
+                    </Button>
+
+                    <Border BorderThickness="1" BorderBrush="gray" Margin="10 8 10 1">
+                        <Panel>
+                            <TextBlock TextWrapping="Wrap" FontSize="10" TextAlignment="Center" 
+                                       Margin="5 -6" VerticalAlignment="Top" Background="gray">Забрать машину</TextBlock>
+                            <StackPanel Margin="5" Spacing="10">
+                                <WrapPanel Margin="0 10 0 0" HorizontalAlignment="Center" KeyUp="TakeCarOnKeyUp">
+                                    <TextBlock TextWrapping="Wrap" VerticalAlignment="Center">Место:</TextBlock>
+                                    <uc:NumericTextBox Margin="5 0 0 0" Width="30" 
+                                                       Text="{Binding GaragePlace}"></uc:NumericTextBox>
+                                </WrapPanel>
+                                
+                                <Button HorizontalAlignment="Center"
+                                        Command="{Binding TakeObjectCommand}"
+                                        IsEnabled="{Binding IsGarageActive}">
+                                    <TextBlock TextWrapping="Wrap">Забрать</TextBlock>
+                                </Button>
+                            </StackPanel>
+                            
+                        </Panel>
+                    </Border>
+                </StackPanel>
+
+            </Panel>
+
+        </DockPanel>
     </Panel>
 
 </Window>

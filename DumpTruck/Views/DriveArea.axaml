@@ -11,23 +11,23 @@
         <Panel Height="70" Margin="0 30 20 5"
                HorizontalAlignment="Right" VerticalAlignment="Bottom" Name="ControlsPanel">
                     
-            <Button HorizontalAlignment="Center" VerticalAlignment="Top"
-                    Command="{Binding MoveCommand}" HotKey="Up" CommandParameter="Up">
+            <RepeatButton HorizontalAlignment="Center" VerticalAlignment="Top"
+                          Command="{Binding MoveCommand}" HotKey="Up" CommandParameter="Up">
                 <PathIcon Data="{StaticResource arrow_up_regular}" />
-            </Button>
+            </RepeatButton>
             <Panel HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="120">
-                <Button  Command="{Binding MoveCommand}"
-                         HotKey="Left" CommandParameter="Left">
+                <RepeatButton  Command="{Binding MoveCommand}"
+                               HotKey="Left" CommandParameter="Left">
                     <PathIcon Data="{StaticResource arrow_left_regular}" />
-                </Button>
-                <Button  Command="{Binding MoveCommand}"
-                         HorizontalAlignment="Center" HotKey="Down" CommandParameter="Down">
+                </RepeatButton>
+                <RepeatButton  Command="{Binding MoveCommand}"
+                               HorizontalAlignment="Center" HotKey="Down" CommandParameter="Down">
                     <PathIcon Data="{StaticResource arrow_down_regular}" />
-                </Button>
-                <Button  Command="{Binding MoveCommand}"
-                         HorizontalAlignment="Right" HotKey="Right" CommandParameter="Right">
+                </RepeatButton>
+                <RepeatButton  Command="{Binding MoveCommand}"
+                               HorizontalAlignment="Right" HotKey="Right" CommandParameter="Right">
                     <PathIcon Data="{StaticResource arrow_right_regular}" />
-                </Button>
+                </RepeatButton>
             </Panel>
         </Panel>
     </Panel>
