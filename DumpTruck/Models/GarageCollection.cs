@@ -97,17 +97,18 @@ public class GarageCollection : Serializable, IEnumerator<string>, IEnumerable<s
         
         return true;
     }
-    
+
     /// <summary>
     /// Добавление гаража
     /// </summary>
     /// <param name="garage"></param>
+    /// <param name="forceSave"></param>
     /// <returns></returns>
-    public bool AddGarage(Garage<IVehicle> garage)
+    public bool AddGarage(Garage<IVehicle> garage, bool forceSave = true)
     {
         _garageStages[garage.Name] = garage;
         _lastAddedGarage = garage.Name;
-        _saveGarage(garage);
+        if (forceSave) _saveGarage(garage);
         
         return true;
     }
