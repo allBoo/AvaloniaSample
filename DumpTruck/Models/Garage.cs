@@ -2,12 +2,15 @@ using System;
 using Avalonia;
 using Avalonia.Media;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 
 namespace DumpTruck.Models;
 
-public class Garage<T> : Serializable where T : class, IVehicle
+public class Garage<T> : Serializable, IStorable where T : class, IVehicle
 {
     private static readonly Logger logger = LogManager.GetCurrentClassLogger();
     
@@ -16,10 +19,19 @@ public class Garage<T> : Serializable where T : class, IVehicle
     /// </summary>
     private readonly List<T> _places;
 
+    public List<T> Places
+    {
+        get => _places;
+    }
+
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int Id { get; set; }
+    
     /// <summary>
     /// название гаража
     /// </summary>
-    public readonly string Name;
+    public string Name { get; set; }
     
     /// <summary>
     /// Ширина окна отрисовки
@@ -106,11 +118,21 @@ public class Garage<T> : Serializable where T : class, IVehicle
                 }
             }
             
-            p._places.Add(car);
+            p._addCar(car);
             return true;
         }
 
         throw new OverflowException("В гараже нет свободных мест");
+    }
+
+    private void _addCar(T car)
+    {
+        _places.Add(car);
+        using (var ctx = new DumpTruckDbContext())
+        {
+            if (car is IStorable storableCar)
+                storableCar.Save(ctx, Id);
+        }
     }
     
     /// <summary>
@@ -124,13 +146,24 @@ public class Garage<T> : Serializable where T : class, IVehicle
     {
         if (index >= 0 && index < p._places.Count)
         {
-            var taken = p._places[index];
-            p._places.RemoveAt(index);
-            
-            return taken;
+            return p._dropCar(index);
         }
 
         throw new IndexOutOfRangeException("Не найден автомобиль по месту " + index);
+    }
+
+    private T _dropCar(int index)
+    {
+        var car = _places[index];
+        _places.RemoveAt(index);
+        
+        using (var ctx = new DumpTruckDbContext())
+        {
+            if (car is IStorable storableCar)
+                storableCar.Delete(ctx);
+        }
+
+        return car;
     }
     
     /// <summary>
@@ -220,8 +253,24 @@ public class Garage<T> : Serializable where T : class, IVehicle
         {
             if (Activator.CreateInstance(t, new object?[]{attrs}) is T vehicle)
             {
-                _places.Add(vehicle);
+                _addCar(vehicle);
             }
         }
+    }
+
+    public void Save(DbContext context, int? parentId = null)
+    {
+        if (context is not DumpTruckDbContext ctx) return;
+
+        ctx.Garages.Add(this as Garage<IVehicle>);
+        ctx.SaveChanges();
+    }
+    
+    public virtual void Delete(DbContext context)
+    {
+        if (context is not DumpTruckDbContext ctx) return;
+        if (Id == 0) return;
+
+        ctx.Garages.Remove(this as Garage<IVehicle>);
     }
 }

@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using DumpTruck.Models;
 using DumpTruck.Views;
 using MessageBox.Avalonia.Enums;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using NLog;
 
@@ -94,6 +95,9 @@ namespace DumpTruck.ViewModels
             SortCommand = ReactiveCommand.Create(SortCars);
             DeleteGarageCommand = ReactiveCommand.Create<string>(DeleteGarage);
             GarageChangedCommand = ReactiveCommand.Create<string>(GarageChanged);
+            
+            // Confi
+            LoadDefault();
         }
 
         public MainWindowViewModel()
@@ -243,6 +247,7 @@ namespace DumpTruck.ViewModels
 
                 using (var file = new StreamReader(fileName[0]))
                 {
+                    _garageCollection.Truncate();
                     _garageCollection = Serializable.LoadFromFile<GarageCollection>(file, _garageCollection.DumpName());
                     ReloadLevels();
 
@@ -262,7 +267,7 @@ namespace DumpTruck.ViewModels
             }
             catch (Exception e)
             {
-                logger.Warn("Load file unknown error: " + e.Message);
+                logger.Warn("Load file unknown error: " + e.Message + "\n" + e.StackTrace);
                 Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
             }
         }
@@ -308,6 +313,48 @@ namespace DumpTruck.ViewModels
                 logger.Warn("Save file unknown error: " + e.Message);
                 Helpers.MessageBox.ShowError($"Неизвестная ошибка {e.Message}");
             }
+        }
+
+        /// <summary>
+        /// Loads data from the database
+        /// </summary>
+        private void LoadDefault()
+        {
+            using (var ctx = new DumpTruckDbContext())
+            {
+                foreach (var garage in ctx.Garages)
+                {
+                    logger.Info("Restore garage " + garage.Name);
+                    garage.Resize(1000, 1000);
+                    try
+                    {
+                        _garageCollection.AddGarage(garage, false);
+
+                        using (var ctx2 = new DumpTruckDbContext())
+                        {
+                            var allCarsSql = ctx2.DumpTrucks.FromSqlRaw(
+                                "SELECT * FROM \"DumpTrucks\" WHERE \"DumpTrucks\".\"GarageId\" = {0}", garage.Id);
+                            foreach (var car in allCarsSql)
+                            {
+                                try
+                                {
+                                    logger.Debug("Restore car " + car);
+                                    _ = _garageCollection[garage.Name] + car;
+                                }
+                                catch (Exception e)
+                                {
+                                    logger.Warn($"Unable to restore car {car} with error {e.Message}");
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        logger.Warn($"Unable to restore garage {garage.Name} with error {e.Message}");
+                    }
+                }
+            }
+            ReloadLevels();
         }
     }
 }

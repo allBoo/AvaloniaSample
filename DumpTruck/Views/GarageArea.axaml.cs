@@ -5,7 +5,7 @@ using Avalonia.Media;
 using Avalonia.Markup.Xaml;
 using DumpTruck.Models;
 using NLog;
-    
+
 namespace DumpTruck.Views;
 
 public partial class GarageArea : UserControl

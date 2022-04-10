@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace DumpTruck.Models;
 
@@ -92,20 +93,32 @@ public class GarageCollection : Serializable, IEnumerator<string>, IEnumerable<s
         
         _garageStages[name] = new Garage<IVehicle>(name, _pictureWidth, _pictureHeight);
         _lastAddedGarage = name;
+        _saveGarage(_garageStages[name]);
         
         return true;
     }
-    
+
     /// <summary>
     /// Добавление гаража
     /// </summary>
     /// <param name="garage"></param>
+    /// <param name="forceSave"></param>
     /// <returns></returns>
-    public bool AddGarage(Garage<IVehicle> garage)
+    public bool AddGarage(Garage<IVehicle> garage, bool forceSave = true)
     {
         _garageStages[garage.Name] = garage;
         _lastAddedGarage = garage.Name;
+        if (forceSave) _saveGarage(garage);
+        
         return true;
+    }
+
+    private void _saveGarage(Garage<IVehicle> garage)
+    {
+        using (var ctx = new DumpTruckDbContext())
+        {
+            garage.Save(ctx);
+        }
     }
     
     /// <summary>
@@ -182,4 +195,17 @@ public class GarageCollection : Serializable, IEnumerator<string>, IEnumerable<s
     /// </summary>
     /// <returns></returns>
     IEnumerator IEnumerable.GetEnumerator() => this;
+
+    public void Truncate()
+    {
+        using (var ctx = new DumpTruckDbContext())
+        {
+            ctx.Database.ExecuteSqlRaw("DELETE FROM \"Garages\"");
+            ctx.Database.ExecuteSqlRaw("DELETE FROM \"DumpTrucks\"");
+            // foreach (var garage in _garageStages.Values)
+            // {
+            //     garage.Delete(ctx);
+            // }
+        }
+    }
 }
